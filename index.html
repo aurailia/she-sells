@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>She Sells Prompts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --plum-deep: #2a1028;
+    --plum: #3d1a3a;
+    --plum-soft: #52264e;
+    --card: rgba(255, 255, 255, 0.06);
+    --card-border: rgba(232, 196, 122, 0.25);
+    --gold: #e8c47a;
+    --gold-bright: #f3d89b;
+    --blush: #f4b6c8;
+    --blush-soft: #f9d7e1;
+    --text: #fbeff3;
+    --muted: #d8bfd0;
+    --input-bg: rgba(255, 255, 255, 0.08);
+    --input-border: rgba(244, 182, 200, 0.35);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: radial-gradient(ellipse at top, var(--plum-soft) 0%, var(--plum) 40%, var(--plum-deep) 100%);
+    background-attachment: fixed;
+    background-color: var(--plum-deep);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* Left menu */
+  .layout { display: flex; align-items: flex-start; min-height: 100vh; }
+  .sidebar {
+    position: sticky; top: 0; height: 100vh; width: 270px; flex: 0 0 270px;
+    overflow-y: auto; padding: 28px 18px;
+    background: rgba(30, 10, 28, 0.72);
+    border-right: 1px solid rgba(232, 196, 122, 0.18);
+  }
+  .side-brand { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 26px; font-weight: 600; margin-bottom: 2px; }
+  .side-brand span { color: var(--blush); font-style: italic; }
+  .side-sub { font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 22px; }
+  .folder { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin: 18px 4px 8px; }
+  .folder:first-child { margin-top: 0; }
+  .pill {
+    display: flex; align-items: center; gap: 10px; width: 100%; text-align: left;
+    font-family: inherit; font-size: 14px; font-weight: 500;
+    color: var(--muted); background: transparent;
+    border: 1px solid transparent; border-radius: 12px;
+    padding: 10px 12px; cursor: pointer; margin-bottom: 6px;
+  }
+  .pill:hover { background: rgba(255,255,255,0.05); }
+  .pill .num {
+    flex: 0 0 24px; height: 24px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600;
+    border: 1px solid rgba(216, 191, 208, 0.4); color: var(--muted);
+  }
+  .pill.active { color: var(--text); background: rgba(232, 196, 122, 0.14); border-color: rgba(232, 196, 122, 0.45); font-weight: 600; }
+  .pill.active .num { border-color: var(--gold); color: var(--gold-bright); }
+  .side-note { font-size: 12px; color: var(--muted); margin-top: 22px; padding: 0 4px; }
+
+  .main { flex: 1; min-width: 0; }
+  .topbar { display: none; }
+  .scrim { display: none; }
+
+  @media (max-width: 860px) {
+    .sidebar {
+      position: fixed; left: 0; top: 0; z-index: 30;
+      transform: translateX(-100%); transition: transform 0.3s ease;
+      background: var(--plum-deep);
+      box-shadow: 8px 0 30px rgba(0,0,0,0.4);
+    }
+    .sidebar.open { transform: translateX(0); }
+    .scrim { position: fixed; inset: 0; z-index: 20; background: rgba(0,0,0,0.5); }
+    .scrim.open { display: block; }
+    .topbar {
+      display: flex; align-items: center; gap: 12px;
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(42, 16, 40, 0.94);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(232, 196, 122, 0.18);
+      padding: 10px 16px;
+    }
+    .menu-btn {
+      font-family: inherit; font-size: 14px; font-weight: 600;
+      color: var(--plum-deep); background: var(--gold);
+      border: none; border-radius: 999px; padding: 8px 14px; cursor: pointer;
+    }
+    .topbar-step { font-size: 13px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  }
+
+  .wrap { max-width: 680px; margin: 0 auto; padding: 0 16px 72px; }
+
+  .hero { text-align: center; padding: 40px 0 22px; }
+  .eyebrow { font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 10px; }
+  h1 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 46px; font-weight: 600; line-height: 1.05; }
+  h1 span { color: var(--blush); font-style: italic; }
+  .lede { color: var(--muted); margin-top: 12px; font-size: 16px; }
+
+  .card { background: var(--card); border: 1px solid var(--card-border); border-radius: 20px; padding: 22px 20px; margin-bottom: 18px; }
+  .lesson-tag { font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 4px; }
+  .card h2 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 32px; font-weight: 600; line-height: 1.15; margin-bottom: 10px; }
+  .card h3 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 24px; font-weight: 600; color: var(--gold-bright); margin-bottom: 10px; }
+  .muted { color: var(--muted); }
+  .lesson-link {
+    display: inline-block; margin-top: 14px; font-size: 14px; font-weight: 600;
+    color: var(--gold-bright); text-decoration: none;
+    border-bottom: 1px solid rgba(243, 216, 155, 0.5); padding-bottom: 2px;
+  }
+  .lesson-link[hidden] { display: none; }
+
+  .steps { list-style: none; }
+  .steps li { padding-left: 26px; position: relative; margin-bottom: 8px; }
+  .steps li:last-child { margin-bottom: 0; }
+  .steps li::before { content: "\2726"; position: absolute; left: 0; color: var(--gold); }
+
+  .field { margin-bottom: 18px; }
+  .field:last-child { margin-bottom: 0; }
+  label { display: block; font-weight: 600; font-size: 15px; color: var(--blush-soft); margin-bottom: 4px; }
+  .hint { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+  textarea {
+    width: 100%; font-family: inherit; font-size: 16px; color: var(--text);
+    background: var(--input-bg); border: 1px solid var(--input-border);
+    border-radius: 12px; padding: 12px 14px; outline: none; resize: vertical; min-height: 84px;
+  }
+  input[type="text"] {
+    width: 100%; font-family: inherit; font-size: 16px; color: var(--text);
+    background: var(--input-bg); border: 1px solid var(--input-border);
+    border-radius: 12px; padding: 12px 14px; outline: none;
+  }
+  textarea::placeholder, input::placeholder { color: rgba(251, 239, 243, 0.4); }
+  textarea:focus, input[type="text"]:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(232, 196, 122, 0.18); }
+
+  .voice-row { display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-top: 8px; }
+  .voice-note { font-size: 12px; color: var(--muted); }
+  .mic {
+    font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--gold-bright); background: rgba(232, 196, 122, 0.1);
+    border: 1px solid rgba(232, 196, 122, 0.5); border-radius: 999px; padding: 8px 14px;
+  }
+  .mic.live { color: var(--plum-deep); background: var(--blush); border-color: var(--blush); }
+  .mic .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; display: none; }
+  .mic.live .dot { display: inline-block; animation: pulse 1s ease-in-out infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+  textarea.listening { border-color: var(--blush); box-shadow: 0 0 0 3px rgba(244, 182, 200, 0.2); }
+
+  .panel {
+    margin-top: 18px; padding: 16px; border-radius: 14px;
+    border: 1px solid rgba(232, 196, 122, 0.45); background: rgba(232, 196, 122, 0.07);
+  }
+  .panel .actions { margin-top: 12px; }
+  .saved-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 12px 0; }
+  .saved-row + .saved-row { border-top: 1px solid rgba(255,255,255,0.08); }
+  .saved-info { flex: 1 1 160px; min-width: 0; }
+  .saved-name { font-weight: 600; color: var(--blush-soft); overflow-wrap: anywhere; }
+  .saved-date { font-size: 12px; color: var(--muted); }
+  .saved-btns { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .saved-btns .ask { font-size: 13px; color: var(--muted); }
+  .btn-sm { padding: 8px 14px; font-size: 14px; flex: none; }
+
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+  .btn {
+    font-family: inherit; font-size: 15px; font-weight: 600; border-radius: 999px;
+    padding: 12px 20px; cursor: pointer; border: none; text-decoration: none;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .btn-primary { background: linear-gradient(135deg, var(--gold), var(--blush)); color: var(--plum-deep); flex: 1 1 100%; }
+  .btn-ghost { background: transparent; color: var(--text); border: 1px solid rgba(216, 191, 208, 0.4); flex: 1 1 auto; }
+  .btn-quiet { background: transparent; color: var(--muted); border: none; padding: 12px 8px; font-weight: 500; text-decoration: underline; }
+  .btn-danger { background: var(--blush); color: var(--plum-deep); }
+  .status { font-size: 14px; color: var(--gold-bright); margin-top: 10px; min-height: 22px; }
+
+  details { margin-top: 16px; }
+  summary { cursor: pointer; color: var(--muted); font-size: 14px; }
+  .preview { background: rgba(0,0,0,0.25); border-radius: 12px; padding: 14px; font-size: 13px; white-space: pre-wrap; margin-top: 10px; color: var(--muted); }
+
+  .upgrade { text-align: center; }
+  .upgrade p { margin-bottom: 14px; }
+  .upgrade .btn { flex: none; }
+
+  .signoff { text-align: center; margin-top: 28px; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 21px; color: var(--blush-soft); }
+  .signoff .sig { color: var(--gold); }
+
+  @media (max-width: 480px) {
+    h1 { font-size: 38px; }
+    .card { padding: 20px 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar" id="sidebar" aria-label="Prompts">
+    <div class="side-brand">She <span>Sells&trade;</span></div>
+    <div class="side-sub">Prompt Library</div>
+    <nav id="nav"></nav>
+    <p class="side-note">New prompts are added every Wednesday with each Sales Tip.</p>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <div class="main">
+    <div class="topbar">
+      <button class="menu-btn" id="menuBtn" type="button" aria-controls="sidebar">&#9776; Prompts</button>
+      <span class="topbar-step" id="topbarStep"></span>
+    </div>
+
+    <div class="wrap">
+
+      <header class="hero">
+        <div class="eyebrow">She Promotes&trade;</div>
+        <h1>She Sells&trade; <span>Prompts</span></h1>
+        <p class="lede">Answer a few questions in your own words. Copy your prompt. Let Claude or ChatGPT shape it into your promo.</p>
+      </header>
+
+      <div class="card">
+        <h3>How it works</h3>
+        <ul class="steps">
+          <li id="voiceTip">Answer the questions below. Type them, or tap Speak and just talk it out. Ramble, don't worry about sounding polished.</li>
+          <li>Tap Copy my prompt.</li>
+          <li>Open Claude or ChatGPT, paste it in, and hit enter.</li>
+        </ul>
+      </div>
+
+      <div class="card" id="promptCard">
+        <div class="lesson-tag" id="lessonTag"></div>
+        <h2 id="promptTitle"></h2>
+        <p class="muted" id="promptIntro"></p>
+        <a class="lesson-link" id="lessonLink" href="#" target="_blank" rel="noopener" hidden>Read the full lesson in She Sells&trade; &#8594;</a>
+      </div>
+
+      <div class="card">
+        <div id="fields"></div>
+
+        <div class="actions" id="mainActions">
+          <button class="btn btn-primary" id="copyBtn" type="button">Copy my prompt</button>
+          <a class="btn btn-ghost" href="https://claude.ai/new" target="_blank" rel="noopener">Open Claude</a>
+          <a class="btn btn-ghost" href="https://chatgpt.com/" target="_blank" rel="noopener">Open ChatGPT</a>
+          <button class="btn btn-ghost" id="saveBtn" type="button">Save these answers</button>
+          <button class="btn btn-quiet" id="clearBtn" type="button">Start over</button>
+        </div>
+
+        <div class="panel" id="savePanel" hidden>
+          <label for="saveName">Name it after your offer</label>
+          <div class="hint">So you can find it and load it again next time.</div>
+          <input id="saveName" type="text" maxlength="60" placeholder="30 Day Gut Reset">
+          <div class="actions">
+            <button class="btn btn-primary" id="saveYes" type="button">Save</button>
+            <button class="btn btn-ghost" id="saveNo" type="button">Cancel</button>
+          </div>
+        </div>
+
+        <div class="panel" id="confirmRow" hidden>
+          <p>Want to save these answers before you clear them?</p>
+          <div class="actions">
+            <button class="btn btn-primary" id="saveFirst" type="button">Save first</button>
+            <button class="btn btn-danger" id="clearNow" type="button">Clear without saving</button>
+            <button class="btn btn-ghost" id="confirmNo" type="button">Cancel</button>
+          </div>
+        </div>
+        <p class="status" id="status" aria-live="polite"></p>
+
+        <details>
+          <summary>See the full prompt</summary>
+          <div class="preview" id="preview"></div>
+        </details>
+      </div>
+
+      <div class="card" id="savedCard" hidden>
+        <h3>Your saved answers</h3>
+        <p class="hint">Saved on this device. Tap Load to bring them back into the boxes.</p>
+        <div id="savedList"></div>
+      </div>
+
+      <div class="card upgrade">
+        <h3>Learn how you're designed to sell</h3>
+        <p class="muted">Inside Promote By Design, you'll learn your Human Design and how you're naturally built to sell. Then it helps you write a whole week of promos in your voice, for She Promotes&trade; and every other group you post in. It's waiting for you in premium.</p>
+        <a class="btn btn-primary" href="https://www.skool.com/she-promotes-7924/plans" target="_blank" rel="noopener">Upgrade to premium</a>
+      </div>
+
+      <div class="signoff">
+        <div>I believe in you. To living our dreams.</div>
+        <div class="sig">Aurailia &#10022;</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var KEY = 'sheSellsPromptLibrary';
+
+  /* Add new prompts to this list. "folder" groups them in the left menu. */
+  var PROMPTS = [
+    {
+      id: 'part-1',
+      folder: 'Why People Buy',
+      nav: 'Part 1: The Feeling First',
+      lesson: 'Why People Buy, Part 1',
+      title: 'They Buy the Feeling First',
+      lessonUrl: 'https://www.skool.com/she-promotes-7924/classroom/6a4aeeb3?md=aab7fcd0656844c7af55e58159fb5e2f',
+      intro: 'Your buyer decides with their feelings first. This prompt helps you open your promo with the moment they live, show them what could be, and then bring in your offer.',
+      questions: [
+        { id: 'offer', label: 'What do you offer, and who is it for?', hint: '', placeholder: 'A gut health community on Skool for people who are tired of feeling bloated and confused about food' },
+        { id: 'moment', label: 'Describe the moment your buyer thinks "I can’t keep doing this."', hint: 'Where are they and what just happened? Be specific.', placeholder: 'At a family dinner, quietly unbuttoning their jeans under the table' },
+        { id: 'tried', label: 'What have they already tried that didn’t work?', hint: '', placeholder: 'Googling symptoms at midnight, random supplements, whatever the last video said' },
+        { id: 'after', label: 'What does life look like once it’s working?', hint: 'What’s the first small moment they’d notice?', placeholder: 'Finishing dinner and realizing they haven’t thought about their stomach once' },
+        { id: 'feeling', label: 'What feeling are they really after?', hint: 'Relief, confidence, feeling understood, something else?', placeholder: 'Relief that they don’t have to figure it out alone anymore' },
+        { id: 'included', label: 'What’s included, and where should they go next?', hint: 'Add your link.', placeholder: 'Weekly live calls, meal guides, a 30 day reset. Join here: [link]' }
+      ],
+      build: function (a) {
+        return [
+          'I want help writing a promo post for a Skool community. Below are my answers to a few questions. Use my own words and phrases wherever you can, so it still sounds like me.',
+          '',
+          'MY ANSWERS',
+          '',
+          '1. What do you offer, and who is it for?',
+          a.offer,
+          '',
+          '2. The moment my buyer thinks "I can’t keep doing this":',
+          a.moment,
+          '',
+          '3. What they’ve already tried that didn’t work:',
+          a.tried,
+          '',
+          '4. What life looks like once it’s working, and the first small moment they’d notice:',
+          a.after,
+          '',
+          '5. The feeling they’re really after:',
+          a.feeling,
+          '',
+          '6. What’s included in my offer, and where they should go next:',
+          a.included,
+          '',
+          'HOW TO WRITE IT',
+          '',
+          '1. Open with the moment from answer 2, as a short question or scene, so my buyer reads it and thinks "that’s me."',
+          '2. In one line, show I understand what they’ve already tried.',
+          '3. Paint what could be using answer 4. Small, real details they can picture and feel.',
+          '4. Name the feeling from answer 5 in one simple line.',
+          '5. Bring in my offer and what’s included, tying each piece to how it helps them feel.',
+          '6. End with one clear, warm invitation and my link. No pressure, no countdowns, no urgency, and no "DM me."',
+          '',
+          'RULES',
+          '- Write like I talk to a friend. Short sentences. Contractions. Warm and simple.',
+          '- Keep it under 200 words.',
+          '- Use "they" or "you" for my buyer unless I say otherwise.',
+          '- No hashtags, no em dashes, no markdown symbols.',
+          '- Avoid phrases that sound like AI, like "in today’s world," "let’s dive in," or "game changer."',
+          '- Don’t invent results, numbers, or claims I didn’t give you.',
+          '',
+          'When you’re done, give me 3 title options that start with the moment from answer 2.'
+        ].join('\n');
+      }
+    }
+  ];
+
+  var state = { current: PROMPTS[0].id, answers: {}, saved: {}, lastName: {} };
+
+  var load = function () {
+    var raw = null;
+    try { raw = window.localStorage.getItem(KEY); } catch (e) { raw = null; }
+    if (!raw) return;
+    try {
+      var parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === 'object') {
+        if (typeof parsed.current === 'string') state.current = parsed.current;
+        if (parsed.answers && typeof parsed.answers === 'object') state.answers = parsed.answers;
+        if (parsed.saved && typeof parsed.saved === 'object') state.saved = parsed.saved;
+        if (parsed.lastName && typeof parsed.lastName === 'object') state.lastName = parsed.lastName;
+      }
+    } catch (e) { /* ignore bad data */ }
+  };
+  var save = function () {
+    try { window.localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* storage unavailable */ }
+  };
+
+  var findPrompt = function (id) {
+    for (var i = 0; i < PROMPTS.length; i++) { if (PROMPTS[i].id === id) return PROMPTS[i]; }
+    return null;
+  };
+
+  var navEl = document.getElementById('nav');
+  var fieldsEl = document.getElementById('fields');
+  var previewEl = document.getElementById('preview');
+  var statusEl = document.getElementById('status');
+  var mainActions = document.getElementById('mainActions');
+  var confirmRow = document.getElementById('confirmRow');
+  var savePanel = document.getElementById('savePanel');
+  var saveName = document.getElementById('saveName');
+  var savedCard = document.getElementById('savedCard');
+  var savedList = document.getElementById('savedList');
+  var clearAfterSave = false;
+  var sidebar = document.getElementById('sidebar');
+  var scrim = document.getElementById('scrim');
+  var menuBtn = document.getElementById('menuBtn');
+  var topbarStep = document.getElementById('topbarStep');
+  var statusTimer = null;
+
+  var setMenu = function (open) {
+    sidebar.classList.toggle('open', open);
+    scrim.classList.toggle('open', open);
+  };
+  menuBtn.addEventListener('click', function () { setMenu(!sidebar.classList.contains('open')); });
+  scrim.addEventListener('click', function () { setMenu(false); });
+
+  var answersFor = function (p) {
+    if (!state.answers[p.id] || typeof state.answers[p.id] !== 'object') state.answers[p.id] = {};
+    return state.answers[p.id];
+  };
+
+  var filledAnswers = function (p) {
+    var saved = answersFor(p);
+    var out = {};
+    p.questions.forEach(function (q) {
+      var v = typeof saved[q.id] === 'string' ? saved[q.id].trim() : '';
+      out[q.id] = v || '(not answered)';
+    });
+    return out;
+  };
+
+  var hasAnyAnswer = function (p) {
+    var saved = answersFor(p);
+    return p.questions.some(function (q) {
+      return typeof saved[q.id] === 'string' && saved[q.id].trim() !== '';
+    });
+  };
+
+  var updatePreview = function () {
+    var p = findPrompt(state.current);
+    previewEl.textContent = p.build(filledAnswers(p));
+  };
+
+  var showStatus = function (msg) {
+    statusEl.textContent = msg;
+    if (statusTimer) clearTimeout(statusTimer);
+    statusTimer = setTimeout(function () { statusEl.textContent = ''; }, 3600);
+  };
+
+  var renderNav = function () {
+    navEl.innerHTML = '';
+    var lastFolder = null;
+    var count = 0;
+    PROMPTS.forEach(function (p) {
+      if (p.folder !== lastFolder) {
+        var f = document.createElement('div');
+        f.className = 'folder';
+        f.textContent = p.folder;
+        navEl.appendChild(f);
+        lastFolder = p.folder;
+        count = 0;
+      }
+      count += 1;
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'pill' + (p.id === state.current ? ' active' : '');
+      var num = document.createElement('span');
+      num.className = 'num';
+      num.textContent = String(count);
+      var txt = document.createElement('span');
+      txt.textContent = p.nav;
+      b.appendChild(num);
+      b.appendChild(txt);
+      b.addEventListener('click', function () { select(p.id); setMenu(false); window.scrollTo(0, 0); });
+      navEl.appendChild(b);
+    });
+  };
+
+  /* Voice: speak answers instead of typing (where the browser supports it) */
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition || null;
+  var voice = null;
+
+  var stopVoice = function () {
+    if (!voice) return;
+    var v = voice;
+    voice = null;
+    v.btn.classList.remove('live');
+    v.label.textContent = 'Speak';
+    v.ta.classList.remove('listening');
+    try { v.rec.stop(); } catch (e) { /* ignore */ }
+  };
+
+  var startVoice = function (p, q, ta, btn, label) {
+    stopVoice();
+    var rec;
+    try { rec = new SR(); } catch (e) { showStatus('Voice isn’t available here. Use the microphone on your keyboard instead.'); return; }
+    rec.lang = navigator.language || 'en-US';
+    rec.continuous = true;
+    rec.interimResults = true;
+    var base = ta.value.trim() ? ta.value.replace(/\s+$/, '') + ' ' : '';
+    var v = { rec: rec, ta: ta, btn: btn, label: label };
+    voice = v;
+    btn.classList.add('live');
+    label.textContent = 'Stop';
+    ta.classList.add('listening');
+
+    var write = function (text) {
+      ta.value = text;
+      answersFor(p)[q.id] = ta.value;
+      save();
+      updatePreview();
+    };
+
+    rec.onresult = function (event) {
+      var finalText = '';
+      var interim = '';
+      for (var i = 0; i < event.results.length; i++) {
+        var r = event.results[i];
+        if (r.isFinal) finalText += r[0].transcript; else interim += r[0].transcript;
+      }
+      write(base + finalText + interim);
+    };
+    rec.onerror = function (event) {
+      if (event && (event.error === 'not-allowed' || event.error === 'service-not-allowed')) {
+        showStatus('To speak your answers, allow microphone access in your browser, then tap Speak again.');
+      } else if (event && event.error === 'no-speech') {
+        showStatus('I didn’t catch anything. Tap Speak and try again.');
+      } else if (event && event.error !== 'aborted') {
+        showStatus('Voice isn’t working in this browser. Tap the microphone on your keyboard instead, it works the same way.');
+      }
+    };
+    rec.onend = function () {
+      if (voice === v) stopVoice();
+    };
+    try { rec.start(); } catch (e) { stopVoice(); showStatus('Voice couldn’t start. Try again, or use the microphone on your keyboard.'); }
+  };
+
+  if (!SR) {
+    document.getElementById('voiceTip').textContent = 'Answer the questions below. Type them, or tap the microphone on your phone’s keyboard and just talk it out. Ramble, don’t worry about sounding polished.';
+  }
+
+  var renderPrompt = function () {
+    stopVoice();
+    var p = findPrompt(state.current);
+    var saved = answersFor(p);
+    document.getElementById('lessonTag').textContent = p.lesson;
+    document.getElementById('promptTitle').textContent = p.title;
+    document.getElementById('promptIntro').textContent = p.intro;
+    var lessonLink = document.getElementById('lessonLink');
+    if (p.lessonUrl) { lessonLink.href = p.lessonUrl; lessonLink.hidden = false; }
+    else { lessonLink.hidden = true; }
+    topbarStep.textContent = p.lesson;
+
+    fieldsEl.innerHTML = '';
+    p.questions.forEach(function (q, i) {
+      var wrap = document.createElement('div');
+      wrap.className = 'field';
+      var fid = 'q-' + q.id;
+      var lab = document.createElement('label');
+      lab.setAttribute('for', fid);
+      lab.textContent = (i + 1) + '. ' + q.label;
+      wrap.appendChild(lab);
+      if (q.hint) {
+        var h = document.createElement('div');
+        h.className = 'hint';
+        h.textContent = q.hint;
+        wrap.appendChild(h);
+      }
+      var ta = document.createElement('textarea');
+      ta.id = fid;
+      ta.placeholder = q.placeholder;
+      ta.value = typeof saved[q.id] === 'string' ? saved[q.id] : '';
+      ta.addEventListener('input', function () {
+        answersFor(p)[q.id] = ta.value;
+        save();
+        updatePreview();
+      });
+      wrap.appendChild(ta);
+      if (SR) {
+        var row = document.createElement('div');
+        row.className = 'voice-row';
+        var mic = document.createElement('button');
+        mic.type = 'button';
+        mic.className = 'mic';
+        mic.setAttribute('aria-label', 'Speak your answer to question ' + (i + 1));
+        var dot = document.createElement('span');
+        dot.className = 'dot';
+        var icon = document.createElement('span');
+        icon.textContent = '🎙️';
+        var micLabel = document.createElement('span');
+        micLabel.textContent = 'Speak';
+        mic.appendChild(dot);
+        mic.appendChild(icon);
+        mic.appendChild(micLabel);
+        mic.addEventListener('click', function () {
+          if (voice && voice.ta === ta) { stopVoice(); return; }
+          startVoice(p, q, ta, mic, micLabel);
+        });
+        row.appendChild(mic);
+        wrap.appendChild(row);
+      }
+      fieldsEl.appendChild(wrap);
+    });
+    updatePreview();
+    renderSaved();
+  };
+
+  /* Saved answer sets */
+  var savedFor = function (p) {
+    if (!Array.isArray(state.saved[p.id])) state.saved[p.id] = [];
+    return state.saved[p.id];
+  };
+
+  var copyAnswers = function (src) {
+    var out = {};
+    for (var k in src) {
+      if (Object.prototype.hasOwnProperty.call(src, k) && typeof src[k] === 'string') out[k] = src[k];
+    }
+    return out;
+  };
+
+  var formatDate = function (ms) {
+    try { return 'Saved ' + new Date(ms).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }); }
+    catch (e) { return ''; }
+  };
+
+  var makeBtn = function (label, cls, onClick) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'btn btn-sm ' + cls;
+    b.textContent = label;
+    b.addEventListener('click', onClick);
+    return b;
+  };
+
+  var renderSaved = function () {
+    var p = findPrompt(state.current);
+    var list = savedFor(p);
+    savedList.innerHTML = '';
+    savedCard.hidden = list.length === 0;
+
+    list.forEach(function (entry, index) {
+      var row = document.createElement('div');
+      row.className = 'saved-row';
+
+      var info = document.createElement('div');
+      info.className = 'saved-info';
+      var nm = document.createElement('div');
+      nm.className = 'saved-name';
+      nm.textContent = entry.name;
+      var dt = document.createElement('div');
+      dt.className = 'saved-date';
+      dt.textContent = formatDate(entry.updated);
+      info.appendChild(nm);
+      info.appendChild(dt);
+
+      var btns = document.createElement('div');
+      btns.className = 'saved-btns';
+
+      var showDefault = function () {
+        btns.innerHTML = '';
+        btns.appendChild(makeBtn('Load', 'btn-primary', function () {
+          state.answers[p.id] = copyAnswers(entry.answers || {});
+          state.lastName[p.id] = entry.name;
+          save();
+          setMode('main');
+          renderPrompt();
+          showStatus('Loaded “' + entry.name + '”. Tweak anything, then copy.');
+          window.scrollTo(0, fieldsEl.getBoundingClientRect().top + window.pageYOffset - 80);
+        }));
+        btns.appendChild(makeBtn('Delete', 'btn-ghost', function () { showAsk(); }));
+      };
+
+      var showAsk = function () {
+        btns.innerHTML = '';
+        var ask = document.createElement('span');
+        ask.className = 'ask';
+        ask.textContent = 'Delete for good?';
+        btns.appendChild(ask);
+        btns.appendChild(makeBtn('Yes, delete', 'btn-danger', function () {
+          list.splice(index, 1);
+          if (state.lastName[p.id] === entry.name) state.lastName[p.id] = '';
+          save();
+          renderSaved();
+          showStatus('Deleted “' + entry.name + '”.');
+        }));
+        btns.appendChild(makeBtn('Keep it', 'btn-ghost', function () { showDefault(); }));
+      };
+
+      showDefault();
+      row.appendChild(info);
+      row.appendChild(btns);
+      savedList.appendChild(row);
+    });
+  };
+
+  var setMode = function (mode) {
+    mainActions.hidden = mode !== 'main';
+    savePanel.hidden = mode !== 'save';
+    confirmRow.hidden = mode !== 'confirm';
+  };
+
+  var openSave = function (thenClear) {
+    clearAfterSave = thenClear;
+    var p = findPrompt(state.current);
+    saveName.value = state.lastName[p.id] || '';
+    setMode('save');
+    try { saveName.focus(); } catch (e) { /* ignore */ }
+  };
+
+  var clearAnswers = function () {
+    var p = findPrompt(state.current);
+    state.answers[p.id] = {};
+    state.lastName[p.id] = '';
+    save();
+    renderPrompt();
+  };
+
+  var doSave = function () {
+    var p = findPrompt(state.current);
+    var name = saveName.value.trim();
+    if (!name) { showStatus('Give it a name first, like the name of your offer.'); return; }
+    var list = savedFor(p);
+    var entry = { name: name, answers: copyAnswers(answersFor(p)), updated: Date.now() };
+    var found = -1;
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].name.toLowerCase() === name.toLowerCase()) { found = i; break; }
+    }
+    if (found > -1) list[found] = entry; else list.push(entry);
+    state.lastName[p.id] = name;
+    save();
+    setMode('main');
+    if (clearAfterSave) {
+      clearAfterSave = false;
+      clearAnswers();
+      showStatus('Saved “' + name + '”. Your boxes are clear and ready for something new.');
+    } else {
+      renderSaved();
+      showStatus((found > -1 ? 'Updated “' : 'Saved “') + name + '”. Find it under Your saved answers.');
+    }
+  };
+
+  var select = function (id) {
+    if (!findPrompt(id)) return;
+    state.current = id;
+    save();
+    clearAfterSave = false;
+    setMode('main');
+    renderNav();
+    renderPrompt();
+    try { window.history.replaceState(null, '', '#' + id); } catch (e) { /* ignore */ }
+  };
+
+  var fallbackCopy = function (text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.top = '-1000px';
+    document.body.appendChild(ta);
+    ta.select();
+    ta.setSelectionRange(0, text.length);
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  };
+
+  var COPIED = 'Copied! Now paste it into Claude or ChatGPT 💖';
+  var FAILED = 'Hmm, copy didn’t work. Open "See the full prompt" and press and hold to copy it.';
+
+  document.getElementById('copyBtn').addEventListener('click', function () {
+    var p = findPrompt(state.current);
+    if (!hasAnyAnswer(p)) { showStatus('Answer a few questions first, then copy.'); return; }
+    var text = p.build(filledAnswers(p));
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        showStatus(COPIED);
+      }, function () {
+        showStatus(fallbackCopy(text) ? COPIED : FAILED);
+      });
+    } else {
+      showStatus(fallbackCopy(text) ? COPIED : FAILED);
+    }
+  });
+
+  document.getElementById('saveBtn').addEventListener('click', function () {
+    if (!hasAnyAnswer(findPrompt(state.current))) { showStatus('Answer a few questions first, then save.'); return; }
+    openSave(false);
+  });
+  document.getElementById('saveYes').addEventListener('click', doSave);
+  saveName.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); doSave(); }
+  });
+  document.getElementById('saveNo').addEventListener('click', function () {
+    clearAfterSave = false;
+    setMode('main');
+  });
+
+  document.getElementById('clearBtn').addEventListener('click', function () {
+    if (!hasAnyAnswer(findPrompt(state.current))) { showStatus('Nothing to clear yet.'); return; }
+    setMode('confirm');
+  });
+  document.getElementById('saveFirst').addEventListener('click', function () { openSave(true); });
+  document.getElementById('clearNow').addEventListener('click', function () {
+    setMode('main');
+    clearAnswers();
+    showStatus('All clear. Start fresh whenever you’re ready.');
+  });
+  document.getElementById('confirmNo').addEventListener('click', function () { setMode('main'); });
+
+  load();
+  var hash = (window.location.hash || '').replace('#', '').toLowerCase();
+  if (hash && findPrompt(hash)) state.current = hash;
+  if (!findPrompt(state.current)) state.current = PROMPTS[0].id;
+  renderNav();
+  renderPrompt();
+  window.addEventListener('hashchange', function () {
+    var h = (window.location.hash || '').replace('#', '').toLowerCase();
+    if (h && findPrompt(h) && h !== state.current) select(h);
+  });
+})();
+</script>
+</body>
+</html>
