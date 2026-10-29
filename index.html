@@ -172,6 +172,17 @@
   .saved-btns .ask { font-size: 13px; color: var(--muted); }
   .btn-sm { padding: 8px 14px; font-size: 14px; flex: none; }
 
+  .snap-card { border-color: rgba(244, 182, 200, 0.4); }
+  .snap-text { min-height: 120px; margin-top: 4px; }
+  .snap-small { margin-top: 10px; margin-bottom: 0; }
+  .snap-status { font-weight: 600; color: var(--gold-bright); margin-bottom: 10px; }
+  .snap-status span { font-weight: 400; color: var(--muted); font-size: 14px; }
+  .check { display: flex; align-items: center; gap: 10px; font-weight: 500; font-size: 15px; color: var(--text); cursor: pointer; margin: 0; }
+  .check input { width: 20px; height: 20px; accent-color: var(--gold); flex: none; }
+  .ask { font-size: 14px; color: var(--muted); align-self: center; }
+  .file-input { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; pointer-events: none; }
+  .intro-link { color: var(--gold-bright); }
+
   .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
   .btn {
     font-family: inherit; font-size: 15px; font-weight: 600; border-radius: 999px;
@@ -240,6 +251,36 @@
         <h2 id="promptTitle"></h2>
         <p class="muted" id="promptIntro"></p>
         <a class="lesson-link" id="lessonLink" href="#" target="_blank" rel="noopener" hidden>Read the full lesson in She Sells&trade; &#8594;</a>
+      </div>
+
+      <div class="card snap-card" id="snapCard">
+        <h3>&#129694; My Client Mirror Snapshot</h3>
+        <p class="hint" id="snapIntro"></p>
+
+        <div id="snapForm">
+          <textarea id="snapText" class="snap-text" placeholder="Paste your Client Mirror Snapshot here"></textarea>
+          <div class="actions">
+            <button class="btn btn-primary" id="snapSave" type="button">Add to my prompts</button>
+            <button class="btn btn-ghost" id="snapUpload" type="button">Upload a file</button>
+            <button class="btn btn-quiet" id="snapCancel" type="button" hidden>Cancel</button>
+          </div>
+          <input class="file-input" id="snapFile" type="file" accept=".txt,.md,text/plain,text/markdown" tabindex="-1" aria-hidden="true">
+          <p class="hint snap-small">Upload works with .txt or .md files. If yours is a Word doc or PDF, just open it, copy everything, and paste it in.</p>
+        </div>
+
+        <div id="snapSaved" hidden>
+          <p class="snap-status">&#10003; Added <span id="snapMeta"></span></p>
+          <label class="check"><input type="checkbox" id="snapInclude"> Add it to every prompt I copy</label>
+          <div class="actions" id="snapActions">
+            <button class="btn btn-ghost btn-sm" id="snapEdit" type="button">View or edit</button>
+            <button class="btn btn-quiet" id="snapRemove" type="button">Remove</button>
+          </div>
+          <div class="actions" id="snapConfirm" hidden>
+            <span class="ask">Remove your Snapshot?</span>
+            <button class="btn btn-danger btn-sm" id="snapRemoveYes" type="button">Yes, remove</button>
+            <button class="btn btn-ghost btn-sm" id="snapRemoveNo" type="button">Keep it</button>
+          </div>
+        </div>
       </div>
 
       <div class="card">
@@ -346,6 +387,8 @@
           '6. What’s included in my offer, and where they should go next:',
           a.included,
           '',
+          'If I’ve attached my Client Mirror Snapshot, read it first and pull my buyer’s exact words and moments from it.',
+          '',
           'THE FEEL OF THE POST',
           'Make it feel ' + tone + '. Let that come through in the words and the emojis you choose.',
           '',
@@ -375,10 +418,147 @@
           'Then ask me: "Want to go deeper, or is this good?" If I want to go deeper, offer me a few simple choices, like making the opening moment more vivid, adding more to what could be, trying a different feel, making it shorter, or asking me a couple of questions to dig into my buyer more. Wait for my answer before you rewrite anything.'
         ].join('\n');
       }
+    },
+    {
+      id: 'part-2-mirror',
+      folder: 'Why People Buy',
+      nav: 'Part 2: Client Mirror Snapshot',
+      lesson: 'Why People Buy, Part 2',
+      title: 'Build Your Client Mirror Snapshot',
+      noTone: true,
+      noSnapshot: true,
+      intro: 'Your Client Mirror Snapshot pulls your buyer’s real moments and exact words into one place. Make it once, save it, and upload it every time you write a post. This one works best in Claude, since you can upload several call transcripts at once. No transcripts? DMs, reviews, voice notes, or your own story work too.',
+      questions: [
+        { id: 'help', label: 'What do you help people with, in your own words?', hint: '', placeholder: 'I help busy business owners get their inbox, invoices, and follow ups handled so nothing slips' },
+        { id: 'called', label: 'Who do you feel most called to work with, and why them?', hint: 'The people you light up working with.', placeholder: 'Solo coaches who are great at their work but drowning in the admin side' },
+        { id: 'story', label: 'Your story. Where were you before you found what you do now?', hint: 'Especially if you’ve lived what your buyer is living.', placeholder: 'I ran my own business and spent every night catching up on emails I meant to answer at noon' },
+        { id: 'sources', label: 'What will you upload?', hint: 'Call transcripts from your last 3 to 5 clients work best. Only share what you’re comfortable sharing.', placeholder: 'Zoom transcripts from 4 discovery calls and a few DMs' }
+      ],
+      build: function (a) {
+        return [
+          'I want you to build a Client Mirror Snapshot for my business. It’s a reference sheet about my soulmate client that I’ll upload every time I write a promo post, so it needs their real moments and their exact words.',
+          '',
+          'ABOUT ME',
+          '',
+          '1. What I help people with:',
+          a.help,
+          '',
+          '2. Who I feel most called to work with, and why:',
+          a.called,
+          '',
+          '3. My story:',
+          a.story,
+          '',
+          '4. What I’m uploading:',
+          a.sources,
+          '',
+          'HOW TO BUILD IT',
+          '',
+          'Read everything I’ve uploaded first. Look for patterns across my clients, and pull out micro specific details: times of day, places, things they did, things they said. Use their exact words wherever you can.',
+          '',
+          'If I didn’t upload anything, don’t guess. Ask me 5 questions about my clients first, one at a time, and build the snapshot from my answers.',
+          '',
+          'Organize it into these sections:',
+          '',
+          'WHO THEY ARE: a short snapshot of their life right now.',
+          'THE MIDDLE OF THE NIGHT: what they’re scrolling, searching, and lying awake thinking about.',
+          'THE VOICE IN THEIR HEAD: the exact things they say to themselves when it’s hard.',
+          'WHAT THEY’VE ALREADY TRIED: and why it didn’t stick.',
+          'WHAT STAYING STUCK IS COSTING THEM: money, time, energy, relationships, confidence.',
+          'WHAT THEY REALLY WANT: the big desire, plus the first small win they’d notice.',
+          'WHAT MAKES THEM HESITATE: the worries that stop them from buying.',
+          'THEIR EXACT WORDS: a bank of 10 to 15 real phrases from what I shared.',
+          'READY TO USE HOOKS: 5 opening lines for promos, each one built from a real moment above.',
+          '',
+          'RULES',
+          '- Protect my clients’ privacy. Leave out names, places, and anything that could identify a real person.',
+          '- Only use what I gave you. Don’t invent details, results, or quotes.',
+          '- Keep it simple and easy to scan. Short lines. CAPITAL LETTER headings. No em dashes, no markdown symbols.',
+          '- Use "they" for my client unless I say otherwise.',
+          '',
+          'When you’re done, give me the finished Snapshot as plain text in one block, so I can copy it all in one go. Then remind me to paste it into My Client Mirror Snapshot in the She Sells™ Prompt Library, so it’s added to every prompt automatically.',
+          '',
+          'Then ask me: "Does this feel like my client, or is anything missing or off?" Wait for my answer and update it if I want changes.'
+        ].join('\n');
+      }
+    },
+    {
+      id: 'part-2',
+      folder: 'Why People Buy',
+      nav: 'Part 2: The “That’s Me” Post',
+      lesson: 'Why People Buy, Part 2',
+      title: 'They Buy When They Think “That’s Me”',
+      intro: 'This prompt helps you open your promo with a moment so specific your buyer stops scrolling and thinks, “that’s me.” Have your Client Mirror Snapshot? Upload it with this prompt and your post gets even better.',
+      questions: [
+        { id: 'offer', label: 'What do you offer, and who is it for?', hint: '', placeholder: 'Virtual assistant support for solo coaches who are drowning in admin' },
+        { id: 'moment', label: 'Where are they, and what time is it, on the hardest day?', hint: 'Get as close as you can. What’s on the screen, the desk, who’s in the room?', placeholder: 'It’s 9pm, still in the inbox, just remembered the client who was ready to pay last week' },
+        { id: 'voice', label: 'What are they saying to themselves in that moment?', hint: 'The exact words. The ones they’d never say out loud.', placeholder: 'I should be able to keep up with this' },
+        { id: 'tried', label: 'What have they already tried that didn’t work?', hint: '', placeholder: 'Planners, three different apps, staying up late to catch up' },
+        { id: 'after', label: 'What does life look like once it’s working?', hint: 'What’s the first small moment they’d notice?', placeholder: 'Closing the laptop at dinner and knowing nothing slipped' },
+        { id: 'included', label: 'What’s included, and where should they go next?', hint: 'Add your link.', placeholder: 'Inbox, invoices, and follow ups handled each week. Book here: [link]' }
+      ],
+      build: function (a, tone) {
+        return [
+          'I want help writing a promo post for a Skool community. Below are my answers to a few questions. Use my own words and phrases wherever you can, so it still sounds like me.',
+          '',
+          'If I’ve attached my Client Mirror Snapshot, read it first and pull my buyer’s exact words and moments from it.',
+          '',
+          'MY ANSWERS',
+          '',
+          '1. What I offer, and who it’s for:',
+          a.offer,
+          '',
+          '2. Where my buyer is on the hardest day:',
+          a.moment,
+          '',
+          '3. What they’re saying to themselves in that moment:',
+          a.voice,
+          '',
+          '4. What they’ve already tried that didn’t work:',
+          a.tried,
+          '',
+          '5. What life looks like once it’s working:',
+          a.after,
+          '',
+          '6. What’s included, and where they should go next:',
+          a.included,
+          '',
+          'THE FEEL OF THE POST',
+          'Make it feel ' + tone + '. Let that come through in the words and the emojis you choose.',
+          '',
+          'HOW TO WRITE IT',
+          '',
+          '1. Open with the moment from answer 2, so specific my buyer reads it and thinks "that’s me." Include the time, the place, or the one detail only they would recognize.',
+          '2. Next, say what the voice in their head says, from answer 3, in their words.',
+          '3. In one line, show I understand what they’ve already tried.',
+          '4. Paint what could be using answer 5. Small, real details they can picture.',
+          '5. Bring in my offer and what’s included, tying each piece to how it helps them.',
+          '6. End with an invitation in this shape: "If you’re tired of [what they’re tired of] and ready for [what could be], then come join us." Then add my link. If my offer isn’t a community, swap "come join us" for the natural next step, like "grab yours" or "book your spot." No pressure, no countdowns, no urgency, and no "DM me."',
+          '',
+          'THE TEST',
+          'Before you give me the post, check the first line: could it be in anyone else’s post? If yes, zoom in and make it more specific until the answer is no.',
+          '',
+          'RULES',
+          '- Write like I talk to a friend. Short sentences. Contractions. Simple words.',
+          '- Keep it under 200 words.',
+          '- Make it easy to scan on a phone: short lines with a blank line between them.',
+          '- Use emojis that match the feel of the post. A few, not on every line.',
+          '- Add one or two short headings in CAPITAL LETTERS, and make a key line or two bold using Unicode bold letters (like 𝗧𝗵𝗶𝘀). Skool doesn’t show markdown, so never use ** or #.',
+          '- If you list anything, use ✦ for the bullets.',
+          '- Use "they" or "you" for my buyer unless I say otherwise.',
+          '- No hashtags and no em dashes.',
+          '- Avoid phrases that sound like AI, like "in today’s world," "let’s dive in," or "game changer."',
+          '- Don’t invent results, numbers, or claims I didn’t give you.',
+          '',
+          'When you’re done, give me 3 title options that start with the moment from answer 2.',
+          '',
+          'Then ask me: "Want to go deeper, or is this good?" If I want to go deeper, offer me a few simple choices, like making the opening moment even more specific, saying more of what they tell themselves, trying a different feel, making it shorter, or asking me a couple of questions to dig into my buyer more. Wait for my answer before you rewrite anything.'
+        ].join('\n');
+      }
     }
   ];
 
-  var state = { current: PROMPTS[0].id, answers: {}, saved: {}, lastName: {} };
+  var state = { current: PROMPTS[0].id, answers: {}, saved: {}, lastName: {}, snapshot: null };
 
   var load = function () {
     var raw = null;
@@ -391,6 +571,7 @@
         if (parsed.answers && typeof parsed.answers === 'object') state.answers = parsed.answers;
         if (parsed.saved && typeof parsed.saved === 'object') state.saved = parsed.saved;
         if (parsed.lastName && typeof parsed.lastName === 'object') state.lastName = parsed.lastName;
+        if (parsed.snapshot && typeof parsed.snapshot === 'object' && typeof parsed.snapshot.text === 'string') state.snapshot = parsed.snapshot;
       }
     } catch (e) { /* ignore bad data */ }
   };
@@ -437,9 +618,16 @@
     var out = {};
     p.questions.forEach(function (q) {
       var v = typeof saved[q.id] === 'string' ? saved[q.id].trim() : '';
-      out[q.id] = v || '(not answered)';
+      out[q.id] = v || (snapUsable(p) ? '(not answered, use my Snapshot)' : '(not answered)');
     });
     return out;
+  };
+
+  var hasSnap = function () {
+    return !!(state.snapshot && typeof state.snapshot.text === 'string' && state.snapshot.text.trim());
+  };
+  var snapUsable = function (p) {
+    return !p.noSnapshot && hasSnap() && state.snapshot.include !== false;
   };
 
   var hasAnyAnswer = function (p) {
@@ -465,7 +653,18 @@
     return list.slice(0, -1).join(', ') + ' and ' + list[list.length - 1];
   };
 
-  var buildFor = function (p) { return p.build(filledAnswers(p), toneText(p)); };
+  var ATTACH_LINE = 'If I’ve attached my Client Mirror Snapshot, read it first and pull my buyer’s exact words and moments from it.';
+  var SNAP_LINE = 'My Client Mirror Snapshot is at the end of this prompt. Read it first, pull my buyer’s exact words and moments from it, and use it to fill in anything my answers leave out.';
+
+  var buildFor = function (p) {
+    var text = p.build(filledAnswers(p), toneText(p));
+    if (snapUsable(p)) {
+      if (text.indexOf(ATTACH_LINE) !== -1) text = text.split(ATTACH_LINE).join(SNAP_LINE);
+      else text = SNAP_LINE + '\n\n' + text;
+      text += '\n\nMY CLIENT MIRROR SNAPSHOT\n\n' + state.snapshot.text.trim();
+    }
+    return text;
+  };
 
   var updatePreview = function () {
     previewEl.textContent = buildFor(findPrompt(state.current));
@@ -583,6 +782,7 @@
 
     fieldsEl.innerHTML = '';
 
+    if (!p.noTone) {
     var toneWrap = document.createElement('div');
     toneWrap.className = 'field';
     var toneLabel = document.createElement('label');
@@ -616,6 +816,7 @@
     });
     toneWrap.appendChild(toneRow);
     fieldsEl.appendChild(toneWrap);
+    }
 
     p.questions.forEach(function (q, i) {
       var wrap = document.createElement('div');
@@ -813,6 +1014,7 @@
     setMode('main');
     renderNav();
     renderPrompt();
+    renderSnapshot();
     try { window.history.replaceState(null, '', '#' + id); } catch (e) { /* ignore */ }
   };
 
@@ -836,7 +1038,7 @@
 
   document.getElementById('copyBtn').addEventListener('click', function () {
     var p = findPrompt(state.current);
-    if (!hasAnyAnswer(p)) { showStatus('Answer a few questions first, then copy.'); return; }
+    if (!hasAnyAnswer(p) && !snapUsable(p)) { showStatus('Answer a few questions first, then copy.'); return; }
     var text = buildFor(p);
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(function () {
@@ -874,12 +1076,136 @@
   });
   document.getElementById('confirmNo').addEventListener('click', function () { setMode('main'); });
 
+  /* My Client Mirror Snapshot: pasted once, added to every prompt */
+  var snapIntro = document.getElementById('snapIntro');
+  var snapForm = document.getElementById('snapForm');
+  var snapSavedEl = document.getElementById('snapSaved');
+  var snapText = document.getElementById('snapText');
+  var snapSave = document.getElementById('snapSave');
+  var snapCancel = document.getElementById('snapCancel');
+  var snapFile = document.getElementById('snapFile');
+  var snapInclude = document.getElementById('snapInclude');
+  var snapActions = document.getElementById('snapActions');
+  var snapConfirm = document.getElementById('snapConfirm');
+  var snapEditing = false;
+
+  var wordCount = function (t) {
+    var m = t.trim().match(/\S+/g);
+    return m ? m.length : 0;
+  };
+
+  var renderSnapIntro = function () {
+    var p = findPrompt(state.current);
+    snapIntro.innerHTML = '';
+    if (p.noSnapshot) {
+      snapIntro.appendChild(document.createTextNode('Once Claude builds your Snapshot, copy it and paste it here. It’ll be added to every She Sells™ prompt automatically, so you never have to upload it again.'));
+      return;
+    }
+    if (hasSnap()) {
+      snapIntro.appendChild(document.createTextNode('Your Snapshot gets added to the end of this prompt, so your post is written from your real buyer.'));
+      return;
+    }
+    snapIntro.appendChild(document.createTextNode('Paste your Snapshot here once and it’s added to every prompt you copy. Don’t have one yet? '));
+    var a = document.createElement('a');
+    a.href = '#part-2-mirror';
+    a.className = 'intro-link';
+    a.textContent = 'Build it with the Client Mirror Snapshot prompt.';
+    snapIntro.appendChild(a);
+  };
+
+  var renderSnapshot = function () {
+    renderSnapIntro();
+    var showForm = !hasSnap() || snapEditing;
+    snapForm.hidden = !showForm;
+    snapSavedEl.hidden = showForm;
+    snapCancel.hidden = !(snapEditing && hasSnap());
+    snapSave.textContent = snapEditing && hasSnap() ? 'Save changes' : 'Add to my prompts';
+    snapActions.hidden = false;
+    snapConfirm.hidden = true;
+    if (hasSnap()) {
+      var words = wordCount(state.snapshot.text);
+      var when = formatDate(state.snapshot.updated);
+      document.getElementById('snapMeta').textContent = '(' + words + ' words' + (when ? ', ' + when.replace('Saved', 'saved') : '') + ')';
+      snapInclude.checked = state.snapshot.include !== false;
+    }
+  };
+
+  snapSave.addEventListener('click', function () {
+    var t = snapText.value.trim();
+    if (!t) { showStatus('Paste your Snapshot first, then tap Add.'); return; }
+    var include = state.snapshot ? state.snapshot.include !== false : true;
+    state.snapshot = { text: t, updated: Date.now(), include: include };
+    snapEditing = false;
+    save();
+    renderSnapshot();
+    updatePreview();
+    showStatus('Your Snapshot is saved and added to your prompts 💖');
+  });
+
+  snapCancel.addEventListener('click', function () {
+    snapEditing = false;
+    renderSnapshot();
+  });
+
+  document.getElementById('snapEdit').addEventListener('click', function () {
+    snapEditing = true;
+    snapText.value = state.snapshot ? state.snapshot.text : '';
+    renderSnapshot();
+  });
+
+  snapInclude.addEventListener('change', function () {
+    if (!state.snapshot) return;
+    state.snapshot.include = snapInclude.checked;
+    save();
+    updatePreview();
+  });
+
+  document.getElementById('snapRemove').addEventListener('click', function () {
+    snapActions.hidden = true;
+    snapConfirm.hidden = false;
+  });
+  document.getElementById('snapRemoveNo').addEventListener('click', function () {
+    snapActions.hidden = false;
+    snapConfirm.hidden = true;
+  });
+  document.getElementById('snapRemoveYes').addEventListener('click', function () {
+    state.snapshot = null;
+    snapEditing = false;
+    snapText.value = '';
+    save();
+    renderSnapshot();
+    updatePreview();
+    showStatus('Snapshot removed.');
+  });
+
+  document.getElementById('snapUpload').addEventListener('click', function () {
+    try { snapFile.value = ''; } catch (e) { /* ignore */ }
+    snapFile.click();
+  });
+  snapFile.addEventListener('change', function () {
+    var f = snapFile.files && snapFile.files[0];
+    if (!f) return;
+    var name = (f.name || '').toLowerCase();
+    if (!/\.(txt|md|markdown)$/.test(name) && f.type.indexOf('text') !== 0) {
+      showStatus('That file type won’t open here. Open it, copy everything, and paste it in.');
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function () {
+      snapText.value = typeof reader.result === 'string' ? reader.result : '';
+      showStatus('File loaded. Check it over, then tap ' + snapSave.textContent + '.');
+    };
+    reader.onerror = function () { showStatus('That file didn’t open. Try copying and pasting instead.'); };
+    reader.readAsText(f);
+  });
+
   load();
   var hash = (window.location.hash || '').replace('#', '').toLowerCase();
   if (hash && findPrompt(hash)) state.current = hash;
   if (!findPrompt(state.current)) state.current = PROMPTS[0].id;
   renderNav();
   renderPrompt();
+  renderSnapshot();
   window.addEventListener('hashchange', function () {
     var h = (window.location.hash || '').replace('#', '').toLowerCase();
     if (h && findPrompt(h) && h !== state.current) select(h);
