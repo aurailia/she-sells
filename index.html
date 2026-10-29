@@ -137,6 +137,13 @@
   textarea::placeholder, input::placeholder { color: rgba(251, 239, 243, 0.4); }
   textarea:focus, input[type="text"]:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(232, 196, 122, 0.18); }
 
+  .tones { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tone {
+    font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer;
+    color: var(--muted); background: transparent;
+    border: 1px solid rgba(216, 191, 208, 0.4); border-radius: 999px; padding: 8px 14px;
+  }
+  .tone.on { color: var(--plum-deep); background: var(--gold); border-color: var(--gold); font-weight: 600; }
   .voice-row { display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-top: 8px; }
   .voice-note { font-size: 12px; color: var(--muted); }
   .mic {
@@ -315,7 +322,7 @@
         { id: 'feeling', label: 'What feeling are they really after?', hint: 'Relief, confidence, feeling understood, something else?', placeholder: 'Relief that they don’t have to figure it out alone anymore' },
         { id: 'included', label: 'What’s included, and where should they go next?', hint: 'Add your link.', placeholder: 'Weekly live calls, meal guides, a 30 day reset. Join here: [link]' }
       ],
-      build: function (a) {
+      build: function (a, tone) {
         return [
           'I want help writing a promo post for a Skool community. Below are my answers to a few questions. Use my own words and phrases wherever you can, so it still sounds like me.',
           '',
@@ -339,6 +346,9 @@
           '6. What’s included in my offer, and where they should go next:',
           a.included,
           '',
+          'THE FEEL OF THE POST',
+          'Make it feel ' + tone + '. Let that come through in the words and the emojis you choose.',
+          '',
           'HOW TO WRITE IT',
           '',
           '1. Open with the moment from answer 2, as a short question or scene, so my buyer reads it and thinks "that’s me."',
@@ -349,14 +359,20 @@
           '6. End with an invitation in this shape: "If you’re tired of [what they’re tired of, from answers 2 and 3] and ready for [what could be, from answer 4], then come join us." Then add my link. If my offer isn’t a community, swap "come join us" for the natural next step, like "grab yours" or "book your spot." No pressure, no countdowns, no urgency, and no "DM me."',
           '',
           'RULES',
-          '- Write like I talk to a friend. Short sentences. Contractions. Warm and simple.',
+          '- Write like I talk to a friend. Short sentences. Contractions. Simple words.',
           '- Keep it under 200 words.',
+          '- Make it easy to scan on a phone: short lines with a blank line between them.',
+          '- Use emojis that match the feel of the post. A few, not on every line.',
+          '- Add one or two short headings in CAPITAL LETTERS, and make a key line or two bold using Unicode bold letters (like 𝗧𝗵𝗶𝘀). Skool doesn’t show markdown, so never use ** or #.',
+          '- If you list anything, use ✦ for the bullets.',
           '- Use "they" or "you" for my buyer unless I say otherwise.',
-          '- No hashtags, no em dashes, no markdown symbols.',
+          '- No hashtags and no em dashes.',
           '- Avoid phrases that sound like AI, like "in today’s world," "let’s dive in," or "game changer."',
           '- Don’t invent results, numbers, or claims I didn’t give you.',
           '',
-          'When you’re done, give me 3 title options that start with the moment from answer 2.'
+          'When you’re done, give me 3 title options that start with the moment from answer 2.',
+          '',
+          'Then ask me: "Want to go deeper, or is this good?" If I want to go deeper, offer me a few simple choices, like making the opening moment more vivid, adding more to what could be, trying a different feel, making it shorter, or asking me a couple of questions to dig into my buyer more. Wait for my answer before you rewrite anything.'
         ].join('\n');
       }
     }
@@ -433,9 +449,26 @@
     });
   };
 
+  /* Post feel: members pick all that apply */
+  var TONES = ['Warm', 'Fun', 'Funny', 'Playful', 'Heartfelt', 'Bold and direct', 'Calm', 'Inspiring'];
+
+  var chosenTones = function (p) {
+    var raw = answersFor(p).tone;
+    if (typeof raw !== 'string' || !raw) return [];
+    return raw.split('|').filter(function (t) { return TONES.indexOf(t) !== -1; });
+  };
+
+  var toneText = function (p) {
+    var list = chosenTones(p).map(function (t) { return t.toLowerCase(); });
+    if (!list.length) return 'warm and friendly';
+    if (list.length === 1) return list[0];
+    return list.slice(0, -1).join(', ') + ' and ' + list[list.length - 1];
+  };
+
+  var buildFor = function (p) { return p.build(filledAnswers(p), toneText(p)); };
+
   var updatePreview = function () {
-    var p = findPrompt(state.current);
-    previewEl.textContent = p.build(filledAnswers(p));
+    previewEl.textContent = buildFor(findPrompt(state.current));
   };
 
   var showStatus = function (msg) {
@@ -549,6 +582,41 @@
     topbarStep.textContent = p.lesson;
 
     fieldsEl.innerHTML = '';
+
+    var toneWrap = document.createElement('div');
+    toneWrap.className = 'field';
+    var toneLabel = document.createElement('label');
+    toneLabel.textContent = 'What kind of post do you want?';
+    toneWrap.appendChild(toneLabel);
+    var toneHint = document.createElement('div');
+    toneHint.className = 'hint';
+    toneHint.textContent = 'Pick all that apply.';
+    toneWrap.appendChild(toneHint);
+    var toneRow = document.createElement('div');
+    toneRow.className = 'tones';
+    var picked = chosenTones(p);
+    TONES.forEach(function (t) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'tone' + (picked.indexOf(t) !== -1 ? ' on' : '');
+      b.setAttribute('aria-pressed', picked.indexOf(t) !== -1 ? 'true' : 'false');
+      b.textContent = t;
+      b.addEventListener('click', function () {
+        var now = chosenTones(p);
+        var at = now.indexOf(t);
+        if (at === -1) now.push(t); else now.splice(at, 1);
+        answersFor(p).tone = now.join('|');
+        var on = now.indexOf(t) !== -1;
+        b.classList.toggle('on', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        save();
+        updatePreview();
+      });
+      toneRow.appendChild(b);
+    });
+    toneWrap.appendChild(toneRow);
+    fieldsEl.appendChild(toneWrap);
+
     p.questions.forEach(function (q, i) {
       var wrap = document.createElement('div');
       wrap.className = 'field';
@@ -769,7 +837,7 @@
   document.getElementById('copyBtn').addEventListener('click', function () {
     var p = findPrompt(state.current);
     if (!hasAnyAnswer(p)) { showStatus('Answer a few questions first, then copy.'); return; }
-    var text = p.build(filledAnswers(p));
+    var text = buildFor(p);
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(function () {
         showStatus(COPIED);
