@@ -24,6 +24,7 @@
     --input-border: rgba(244, 182, 200, 0.35);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
   body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background: radial-gradient(ellipse at top, var(--plum-soft) 0%, var(--plum) 40%, var(--plum-deep) 100%);
@@ -173,6 +174,16 @@
   .btn-sm { padding: 8px 14px; font-size: 14px; flex: none; }
 
   .snap-card { border-color: rgba(244, 182, 200, 0.4); }
+  .step-head { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+  .step-head h3 { margin-bottom: 0; }
+  .step-num {
+    flex: 0 0 34px; height: 34px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 700; color: var(--plum-deep);
+    background: linear-gradient(135deg, var(--gold), var(--blush));
+  }
+  .step-card > .hint { margin-bottom: 16px; }
+  .step-card .status { margin-top: 10px; }
   .snap-text { min-height: 120px; margin-top: 4px; }
   .snap-small { margin-top: 10px; margin-bottom: 0; }
   .snap-status { font-weight: 600; color: var(--gold-bright); margin-bottom: 10px; }
@@ -237,15 +248,6 @@
         <p class="lede">Answer a few questions in your own words. Copy your prompt. Let Claude or ChatGPT shape it into your promo.</p>
       </header>
 
-      <div class="card">
-        <h3>How it works</h3>
-        <ul class="steps">
-          <li id="voiceTip">Answer the questions below. Type them, or tap Speak and just talk it out. Ramble, don't worry about sounding polished.</li>
-          <li>Tap Copy my prompt.</li>
-          <li>Open Claude or ChatGPT, paste it in, and hit enter.</li>
-        </ul>
-      </div>
-
       <div class="card" id="promptCard">
         <div class="lesson-tag" id="lessonTag"></div>
         <h2 id="promptTitle"></h2>
@@ -253,14 +255,16 @@
         <a class="lesson-link" id="lessonLink" href="#" target="_blank" rel="noopener" hidden>Read the full lesson in She Sells&trade; &#8594;</a>
       </div>
 
-      <div class="card snap-card" id="snapCard">
-        <h3>&#129694; My Client Mirror Snapshot</h3>
+      <div id="steps">
+
+      <div class="card step-card snap-card" id="snapCard">
+        <div class="step-head"><span class="step-num"></span><h3 id="snapTitle"></h3></div>
         <p class="hint" id="snapIntro"></p>
 
         <div id="snapForm">
           <textarea id="snapText" class="snap-text" placeholder="Paste your Client Mirror Snapshot here"></textarea>
           <div class="actions">
-            <button class="btn btn-primary" id="snapSave" type="button">Add to my prompts</button>
+            <button class="btn btn-primary" id="snapSave" type="button">Save my Snapshot</button>
             <button class="btn btn-ghost" id="snapUpload" type="button">Upload a file</button>
             <button class="btn btn-quiet" id="snapCancel" type="button" hidden>Cancel</button>
           </div>
@@ -270,7 +274,7 @@
 
         <div id="snapSaved" hidden>
           <p class="snap-status">&#10003; Added <span id="snapMeta"></span></p>
-          <label class="check"><input type="checkbox" id="snapInclude"> Add it to every prompt I copy</label>
+          <label class="check"><input type="checkbox" id="snapInclude"> Add it to my prompts</label>
           <div class="actions" id="snapActions">
             <button class="btn btn-ghost btn-sm" id="snapEdit" type="button">View or edit</button>
             <button class="btn btn-quiet" id="snapRemove" type="button">Remove</button>
@@ -281,15 +285,29 @@
             <button class="btn btn-ghost btn-sm" id="snapRemoveNo" type="button">Keep it</button>
           </div>
         </div>
+        <p class="status" id="snapStatus" aria-live="polite"></p>
       </div>
 
-      <div class="card">
+      <div class="card step-card" id="toneCard">
+        <div class="step-head"><span class="step-num"></span><h3>Pick the feel of your post</h3></div>
+        <p class="hint">Tap all that apply. Skip it and your post comes out warm and friendly.</p>
+        <div class="tones" id="toneRow"></div>
+      </div>
+
+      <div class="card step-card" id="questionsCard">
+        <div class="step-head"><span class="step-num"></span><h3>Answer the questions</h3></div>
+        <p class="hint" id="voiceTip">Type your answers, or tap Speak and just talk it out. Ramble. It doesn't need to sound polished.</p>
         <div id="fields"></div>
+      </div>
+
+      <div class="card step-card" id="copyCard">
+        <div class="step-head"><span class="step-num"></span><h3 id="copyTitle"></h3></div>
+        <p class="hint" id="copyIntro"></p>
 
         <div class="actions" id="mainActions">
           <button class="btn btn-primary" id="copyBtn" type="button">Copy my prompt</button>
           <a class="btn btn-ghost" href="https://claude.ai/new" target="_blank" rel="noopener">Open Claude</a>
-          <a class="btn btn-ghost" href="https://chatgpt.com/" target="_blank" rel="noopener">Open ChatGPT</a>
+          <a class="btn btn-ghost" id="chatgptBtn" href="https://chatgpt.com/" target="_blank" rel="noopener">Open ChatGPT</a>
           <button class="btn btn-ghost" id="saveBtn" type="button">Save these answers</button>
           <button class="btn btn-quiet" id="clearBtn" type="button">Start over</button>
         </div>
@@ -318,6 +336,8 @@
           <summary>See the full prompt</summary>
           <div class="preview" id="preview"></div>
         </details>
+      </div>
+
       </div>
 
       <div class="card" id="savedCard" hidden>
@@ -387,8 +407,6 @@
           '6. What’s included in my offer, and where they should go next:',
           a.included,
           '',
-          'If I’ve attached my Client Mirror Snapshot, read it first and pull my buyer’s exact words and moments from it.',
-          '',
           'THE FEEL OF THE POST',
           'Make it feel ' + tone + '. Let that come through in the words and the emojis you choose.',
           '',
@@ -426,7 +444,7 @@
       lesson: 'Why People Buy, Part 2',
       title: 'Build Your Client Mirror Snapshot',
       noTone: true,
-      noSnapshot: true,
+      snapshot: 'build',
       intro: 'Your Client Mirror Snapshot pulls your buyer’s real moments and exact words into one place. Make it once, save it, and upload it every time you write a post. This one works best in Claude, since you can upload several call transcripts at once. No transcripts? DMs, reviews, voice notes, or your own story work too.',
       questions: [
         { id: 'help', label: 'What do you help people with, in your own words?', hint: '', placeholder: 'I help busy business owners get their inbox, invoices, and follow ups handled so nothing slips' },
@@ -485,10 +503,11 @@
     {
       id: 'part-2',
       folder: 'Why People Buy',
+      snapshot: 'use',
       nav: 'Part 2: The “That’s Me” Post',
       lesson: 'Why People Buy, Part 2',
       title: 'They Buy When They Think “That’s Me”',
-      intro: 'This prompt helps you open your promo with a moment so specific your buyer stops scrolling and thinks, “that’s me.” Have your Client Mirror Snapshot? Upload it with this prompt and your post gets even better.',
+      intro: 'This prompt helps you open your promo with a moment so specific your buyer stops scrolling and thinks, “that’s me.” Add your Client Mirror Snapshot in step 1 and your post gets even better.',
       questions: [
         { id: 'offer', label: 'What do you offer, and who is it for?', hint: '', placeholder: 'Virtual assistant support for solo coaches who are drowning in admin' },
         { id: 'moment', label: 'Where are they, and what time is it, on the hardest day?', hint: 'Get as close as you can. What’s on the screen, the desk, who’s in the room?', placeholder: 'It’s 9pm, still in the inbox, just remembered the client who was ready to pay last week' },
@@ -627,7 +646,7 @@
     return !!(state.snapshot && typeof state.snapshot.text === 'string' && state.snapshot.text.trim());
   };
   var snapUsable = function (p) {
-    return !p.noSnapshot && hasSnap() && state.snapshot.include !== false;
+    return p.snapshot === 'use' && hasSnap() && state.snapshot.include !== false;
   };
 
   var hasAnyAnswer = function (p) {
@@ -765,8 +784,38 @@
   };
 
   if (!SR) {
-    document.getElementById('voiceTip').textContent = 'Answer the questions below. Type them, or tap the microphone on your phone’s keyboard and just talk it out. Ramble, don’t worry about sounding polished.';
+    document.getElementById('voiceTip').textContent = 'Type your answers, or tap the microphone on your keyboard and just talk it out. Ramble. It doesn\u2019t need to sound polished.';
   }
+
+  var orderSteps = function (p) {
+    var ids;
+    if (p.snapshot === 'build') ids = ['questionsCard', 'copyCard', 'snapCard'];
+    else if (p.snapshot === 'use') ids = ['snapCard', 'toneCard', 'questionsCard', 'copyCard'];
+    else ids = ['toneCard', 'questionsCard', 'copyCard'];
+    if (p.noTone) ids = ids.filter(function (id) { return id !== 'toneCard'; });
+    var stepsEl = document.getElementById('steps');
+    ['snapCard', 'toneCard', 'questionsCard', 'copyCard'].forEach(function (id) {
+      document.getElementById(id).hidden = ids.indexOf(id) === -1;
+    });
+    ids.forEach(function (id, i) {
+      var card = document.getElementById(id);
+      card.querySelector('.step-num').textContent = String(i + 1);
+      stepsEl.appendChild(card);
+    });
+
+    var copyTitle = document.getElementById('copyTitle');
+    var copyIntro = document.getElementById('copyIntro');
+    var chatgptBtn = document.getElementById('chatgptBtn');
+    if (p.snapshot === 'build') {
+      copyTitle.textContent = 'Copy your prompt into Claude';
+      copyIntro.textContent = 'Tap Copy my prompt, then Open Claude. Paste it in, attach your call transcripts or DMs with the paperclip, and hit enter.';
+      chatgptBtn.hidden = true;
+    } else {
+      copyTitle.textContent = 'Copy your prompt';
+      copyIntro.textContent = 'Tap Copy my prompt, then open Claude or ChatGPT. Paste it in and hit enter.';
+      chatgptBtn.hidden = false;
+    }
+  };
 
   var renderPrompt = function () {
     stopVoice();
@@ -782,18 +831,9 @@
 
     fieldsEl.innerHTML = '';
 
+    var toneRowEl = document.getElementById('toneRow');
+    toneRowEl.innerHTML = '';
     if (!p.noTone) {
-    var toneWrap = document.createElement('div');
-    toneWrap.className = 'field';
-    var toneLabel = document.createElement('label');
-    toneLabel.textContent = 'What kind of post do you want?';
-    toneWrap.appendChild(toneLabel);
-    var toneHint = document.createElement('div');
-    toneHint.className = 'hint';
-    toneHint.textContent = 'Pick all that apply.';
-    toneWrap.appendChild(toneHint);
-    var toneRow = document.createElement('div');
-    toneRow.className = 'tones';
     var picked = chosenTones(p);
     TONES.forEach(function (t) {
       var b = document.createElement('button');
@@ -812,11 +852,11 @@
         save();
         updatePreview();
       });
-      toneRow.appendChild(b);
+      toneRowEl.appendChild(b);
     });
-    toneWrap.appendChild(toneRow);
-    fieldsEl.appendChild(toneWrap);
     }
+
+    orderSteps(p);
 
     p.questions.forEach(function (q, i) {
       var wrap = document.createElement('div');
@@ -1094,22 +1134,33 @@
     return m ? m.length : 0;
   };
 
+  var snapStatusEl = document.getElementById('snapStatus');
+  var snapTimer = null;
+  var showSnapStatus = function (msg) {
+    snapStatusEl.textContent = msg;
+    if (snapTimer) clearTimeout(snapTimer);
+    snapTimer = setTimeout(function () { snapStatusEl.textContent = ''; }, 4000);
+  };
+
   var renderSnapIntro = function () {
     var p = findPrompt(state.current);
+    var title = document.getElementById('snapTitle');
     snapIntro.innerHTML = '';
-    if (p.noSnapshot) {
-      snapIntro.appendChild(document.createTextNode('Once Claude builds your Snapshot, copy it and paste it here. It’ll be added to every She Sells™ prompt automatically, so you never have to upload it again.'));
+    if (p.snapshot === 'build') {
+      title.textContent = 'Paste your finished Snapshot here';
+      snapIntro.appendChild(document.createTextNode('Once Claude builds your Snapshot, copy it and paste it here. It saves on this device and gets added to your She Sells\u2122 prompts from here on, so you never have to upload it again.'));
       return;
     }
+    title.textContent = 'Add your Client Mirror Snapshot (optional)';
     if (hasSnap()) {
-      snapIntro.appendChild(document.createTextNode('Your Snapshot gets added to the end of this prompt, so your post is written from your real buyer.'));
+      snapIntro.appendChild(document.createTextNode('Your Snapshot is added to this prompt, so your post is written from your real buyer.'));
       return;
     }
-    snapIntro.appendChild(document.createTextNode('Paste your Snapshot here once and it’s added to every prompt you copy. Don’t have one yet? '));
+    snapIntro.appendChild(document.createTextNode('This makes your post so much better. Paste your Snapshot here once and it\u2019s added to your prompts. Don\u2019t have one yet? '));
     var a = document.createElement('a');
     a.href = '#part-2-mirror';
     a.className = 'intro-link';
-    a.textContent = 'Build it with the Client Mirror Snapshot prompt.';
+    a.textContent = 'Build it here.';
     snapIntro.appendChild(a);
   };
 
@@ -1119,7 +1170,7 @@
     snapForm.hidden = !showForm;
     snapSavedEl.hidden = showForm;
     snapCancel.hidden = !(snapEditing && hasSnap());
-    snapSave.textContent = snapEditing && hasSnap() ? 'Save changes' : 'Add to my prompts';
+    snapSave.textContent = snapEditing && hasSnap() ? 'Save changes' : 'Save my Snapshot';
     snapActions.hidden = false;
     snapConfirm.hidden = true;
     if (hasSnap()) {
@@ -1132,14 +1183,14 @@
 
   snapSave.addEventListener('click', function () {
     var t = snapText.value.trim();
-    if (!t) { showStatus('Paste your Snapshot first, then tap Add.'); return; }
+    if (!t) { showSnapStatus('Paste your Snapshot first, then tap Add.'); return; }
     var include = state.snapshot ? state.snapshot.include !== false : true;
     state.snapshot = { text: t, updated: Date.now(), include: include };
     snapEditing = false;
     save();
     renderSnapshot();
     updatePreview();
-    showStatus('Your Snapshot is saved and added to your prompts 💖');
+    showSnapStatus('Your Snapshot is saved and added to your prompts 💖');
   });
 
   snapCancel.addEventListener('click', function () {
@@ -1175,7 +1226,7 @@
     save();
     renderSnapshot();
     updatePreview();
-    showStatus('Snapshot removed.');
+    showSnapStatus('Snapshot removed.');
   });
 
   document.getElementById('snapUpload').addEventListener('click', function () {
@@ -1187,15 +1238,15 @@
     if (!f) return;
     var name = (f.name || '').toLowerCase();
     if (!/\.(txt|md|markdown)$/.test(name) && f.type.indexOf('text') !== 0) {
-      showStatus('That file type won’t open here. Open it, copy everything, and paste it in.');
+      showSnapStatus('That file type won’t open here. Open it, copy everything, and paste it in.');
       return;
     }
     var reader = new FileReader();
     reader.onload = function () {
       snapText.value = typeof reader.result === 'string' ? reader.result : '';
-      showStatus('File loaded. Check it over, then tap ' + snapSave.textContent + '.');
+      showSnapStatus('File loaded. Check it over, then tap ' + snapSave.textContent + '.');
     };
-    reader.onerror = function () { showStatus('That file didn’t open. Try copying and pasting instead.'); };
+    reader.onerror = function () { showSnapStatus('That file didn’t open. Try copying and pasting instead.'); };
     reader.readAsText(f);
   });
 
