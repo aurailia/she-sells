@@ -185,6 +185,14 @@
   .ptab .star { color: var(--gold); margin-left: 4px; }
   .ptab.on .star { color: var(--on-gold); }
   .btn.faved { background: var(--surface-2); border-color: var(--gold); color: var(--gold); }
+  .gsec { margin-bottom: 30px; }
+  .gsec h2 { margin: 0 0 2px; }
+  .gsub { margin: 0 0 12px; font-size: 16px; }
+  .btn.dirty { border-color: var(--gold); color: var(--gold); }
+  .btn .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--blush); }
+  .savenote { width: 100%; text-align: right; font-size: 14px; color: var(--faint); margin: 0; }
+  .savenote.warn { color: var(--blush); }
+  @media (max-width: 600px) { .savenote { text-align: left; } }
   .mine-note { font-size: 14px; color: var(--muted); margin: 6px 0 0; }
   .ptab .pn { font-size: 12px; font-weight: 700; opacity: .85; margin-left: 4px; }
   .tick.full { opacity: .5; cursor: not-allowed; }
@@ -205,7 +213,7 @@
       <a href="#week" data-nav="week">My week</a>
       <a href="#build" data-nav="build">Build a post</a>
       <a href="#favorites" data-nav="favorites">&#9733; Favorites</a>
-      <a href="#groups" data-nav="groups">My groups</a>
+      <a href="#groups" data-nav="groups">Groups &amp; offers</a>
     </nav>
   </header>
 
@@ -225,6 +233,7 @@
         <button class="btn small" type="button" id="pasteOpen">&#128229; Paste my week</button>
         <button class="btn small danger" type="button" id="clearWeek">Clear the week</button>
       </div>
+      <p class="savenote" id="saveNote" hidden></p>
     </div>
     <div class="panel" id="movePanel" hidden style="margin-bottom:16px">
       <h2>Move my week to another device</h2>
@@ -307,7 +316,7 @@
           <div id="bForWrap" hidden style="margin-top:10px">
             <label for="bFor">Which community?</label>
             <select id="bFor"></select>
-            <p class="hint" id="bForHint" hidden>Mark your own communities in <a href="#groups" style="color:var(--gold)">My groups</a> and they'll show up here.</p>
+            <p class="hint" id="bForHint" hidden>Add your own communities in <a href="#groups" style="color:var(--gold)">Groups &amp; offers</a> and they'll show up here.</p>
           </div>
         </div>
         <div class="field">
@@ -365,19 +374,35 @@
 
   <!-- GROUPS -->
   <section id="vGroups" hidden>
-    <h1>My groups and offers</h1>
-    <p class="lede">The communities you post in. Mark the ones you own as My community. For promo groups, set the days you can promote and how many posts a day they allow. Each day only shows the groups you can post in, and keeps count for you.</p>
-    <div class="panel">
-      <div class="glist" id="gList"></div>
-      <div class="row"><button class="btn" type="button" id="gAdd">&#10133; Add a group</button></div>
+    <h1>Groups &amp; offers</h1>
+    <p class="lede">Set this up once. She Posts uses it to show you where to post each day.</p>
+    <div id="grpWrap">
+      <div class="gsec">
+        <h2>&#128227; Where I promote</h2>
+        <p class="hint gsub">Promo groups you post in. Tap the days they allow and how many posts a day.</p>
+        <div class="panel">
+          <div class="glist" id="gList"></div>
+          <div class="row"><button class="btn" type="button" id="gAdd">&#10133; Add a promo group</button></div>
+        </div>
+      </div>
+      <div class="gsec">
+        <h2>&#127969; My communities</h2>
+        <p class="hint gsub">Communities you own. Posts for them can go up any day. Skip this if you don't have one.</p>
+        <div class="panel">
+          <div class="glist" id="cList"></div>
+          <div class="row"><button class="btn" type="button" id="cAdd">&#10133; Add my community</button></div>
+        </div>
+      </div>
     </div>
-    <h2 style="margin-top:28px">My offers</h2>
-    <p class="lede" style="margin-bottom:14px">What you promote. Add each offer once, then set a post to it with "This post is for". Offer posts show the promo groups you can post in that day.</p>
-    <div class="panel">
-      <div class="glist" id="oList"></div>
-      <div class="row"><button class="btn" type="button" id="oAdd">&#10133; Add an offer</button></div>
-      <p class="hint">Everything saves on this device. To use your week on another phone or computer, tap Save to a file on the My week page.</p>
+    <div class="gsec">
+      <h2>&#128717;&#65039; My offers</h2>
+      <p class="hint gsub">What you sell or promote, like a session, a course or a product. Set a post to an offer and you'll see your promo groups for that day.</p>
+      <div class="panel">
+        <div class="glist" id="oList"></div>
+        <div class="row"><button class="btn" type="button" id="oAdd">&#10133; Add an offer</button></div>
+      </div>
     </div>
+    <p class="hint" style="margin-top:18px">Everything saves on this device. To use it on another phone or computer, tap Save to a file on the My week page.</p>
   </section>
 </div>
 <div class="toast" id="toast" hidden role="status"></div>
@@ -454,8 +479,9 @@
     S.build = Object.assign({}, SEED.build, S.build || {});
     S.groups = S.groups || []; S.offers = S.offers || []; S.favs = S.favs || [];
   }
-  function save() {
-    S.updatedAt = Date.now();
+  function save(quiet) {
+    if (!quiet) S.updatedAt = Date.now();
+    setTimeout(markDirty, 0);
     queueCloud();
     try { localStorage.setItem(KEY, JSON.stringify(S)); return true; }
     catch (e) { if (cloud) return true; toast("Storage is full. Remove an image or clear the week, then try again."); return false; }
@@ -579,7 +605,7 @@
   }
   document.addEventListener("change", function (e) {
     if (!e.target.matches || !e.target.matches("[data-show]")) return;
-    S.show = e.target.value; save();
+    S.show = e.target.value; save(true);
     if (!$("vDay").hidden) renderDay(curDay); else renderWeek();
   });
   function todayIdx() { var d = new Date().getDay(); return d === 0 ? 6 : d - 1; }
@@ -697,6 +723,7 @@
   }
 
   function renderWeek() {
+    markDirty();
     var t = todayIdx();
     $("weekGrid").innerHTML = DAYS.map(function (d, i) {
       var ps = shownFor(i), first = ps[0], withImg = ps.find(function (p) { return imgSrc(p); });
@@ -731,13 +758,35 @@
 
   /* ---------- save to a file / open a file (images included) ---------- */
   function stamp() { var d = new Date(), p = function (n) { return (n < 10 ? "0" : "") + n; }; return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()); }
+  function isDirty() { return !!(S.updatedAt && (!S.fileSavedAt || S.updatedAt > S.fileSavedAt)); }
+  function markDirty() {
+    var b = $("fileSave"); if (!b) return;
+    var d = isDirty();
+    b.classList.toggle("dirty", d);
+    b.innerHTML = "&#128190; Save to a file" + (d ? ' <span class="dot" aria-hidden="true"></span>' : "");
+    var n = $("saveNote");
+    if (n) { n.hidden = false; n.textContent = d ? "Changes not saved to a file yet" : (S.fileSavedAt ? "Saved to a file " + new Date(S.fileSavedAt).toLocaleString([], { weekday: "short", hour: "numeric", minute: "2-digit" }) : ""); n.classList.toggle("warn", d); }
+  }
+  function markSaved() { S.fileSavedAt = Date.now(); save(true); }
   $("fileSave").addEventListener("click", function () {
     var data = { app: "she-posts", v: 1, savedAt: Date.now(), posts: S.posts, groups: S.groups, offers: S.offers, favs: S.favs, build: S.build, show: S.show || "all" };
-    var blob = new Blob([JSON.stringify(data)], { type: "application/json" });
-    var url = URL.createObjectURL(blob), a = document.createElement("a");
-    a.href = url; a.download = "she-posts-" + stamp() + ".json"; document.body.appendChild(a); a.click(); a.remove();
+    var text = JSON.stringify(data), name = "she-posts-" + stamp() + ".json";
+    var file = null, canShareFile = false;
+    if (touchDevice() && navigator.share && navigator.canShare) {
+      try {
+        file = new File([text], name, { type: "application/json" });
+        canShareFile = navigator.canShare({ files: [file] });
+        if (!canShareFile) { file = new File([text], name, { type: "text/plain" }); canShareFile = navigator.canShare({ files: [file] }); }
+      } catch (e) { canShareFile = false; }
+    }
+    if (canShareFile) {
+      navigator.share({ files: [file], title: "She Posts week" }).then(function () { markSaved(); toast("Saved. Open it on your other device."); }, function () {});
+      return;
+    }
+    var url = URL.createObjectURL(new Blob([text], { type: "application/json" })), a = document.createElement("a");
+    a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
     setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
-    toast("Saved. Look in your Downloads.");
+    markSaved(); toast("Saved. Look in your Downloads.");
   });
   var filePick = document.createElement("input"); filePick.type = "file"; filePick.hidden = true; document.body.appendChild(filePick);
   var pending = null;
@@ -765,6 +814,7 @@
       S.posts = pending.posts.map(function (p) { return Object.assign({ img: "", imgPrompt: "", posted: {} }, p); });
       S.groups = pending.groups || S.groups; S.offers = pending.offers || S.offers; S.favs = pending.favs || S.favs; S.build = Object.assign({}, SEED.build, pending.build || {}); S.show = pending.show || "all";
       if (!save()) { S = JSON.parse(before); toast("This device ran out of room for all the images. Remove a few images and save the file again."); return; }
+      S.fileSavedAt = Date.now(); S.updatedAt = S.fileSavedAt; save(true);
       pending = null; $("filePanel").hidden = true; renderWeek(); toast("Your week is here");
     });
   });
@@ -814,7 +864,7 @@
         '<p class="edit-tip">Tap the title or the post to edit. Changes save as you type. Links show as [words](link) here and become real links when you copy the post.</p>' +
       '</div><div class="side">' +
         '<div class="panel"><label for="pFor" class="label">This post is for</label><select id="pFor">' + forOptions(cf) + "</select>" +
-          (mineGroups().length || (S.offers || []).length ? "" : '<p class="hint" style="margin:8px 0 0">Add your offers or your own community in <a href="#groups" style="color:var(--gold)">My groups</a> and they show up here.</p>') + "</div>" +
+          (mineGroups().length || (S.offers || []).length ? "" : '<p class="hint" style="margin:8px 0 0">Add your offers or your own community in <a href="#groups" style="color:var(--gold)">Groups &amp; offers</a> and they show up here.</p>') + "</div>" +
         '<div class="panel"><span class="label">Copy</span><div class="row">' +
           '<button class="btn primary small" type="button" data-act="copy-title">Copy title</button>' +
           '<button class="btn primary small" type="button" data-act="copy-body">Copy post</button>' +
@@ -832,7 +882,7 @@
               (function () { var vs = []; ps.forEach(function (pp, ii) { if (pp.posted && pp.posted[g.id]) vs.push(ii + 1); }); return vs.length ? '<span class="gvers">' + vs.map(function (n) { return '<span class="vtag' + (ps[n - 1].id === cur.id ? " me" : "") + '">Post ' + n + "</span>"; }).join("") + "</span>" : ""; })() +
               "</span>" +
               '<button class="tick' + (mine ? " on" : "") + (full ? " full" : "") + '" type="button" data-tick="' + g.id + '"' + (full ? " disabled" : "") + ">" + (mine ? "\u2713 Post " + (ps.indexOf(cur) + 1) + " posted" : full ? "Full today" : "Mark Post " + (ps.indexOf(cur) + 1) + " posted") + "</button></div>";
-          }).join("") + "</div>" : cf === "social" ? '<p class="hint">A social media post. Copy it and share it wherever you like.</p>' : '<p class="hint">' + (promoGroups().length ? "None of your promo groups take promos on " + DAYS[d] + "." : "Add your promo groups in") + ' <a href="#groups" style="color:var(--gold)">My groups</a>' + (promoGroups().length ? " to change their days." : ".") + "</p>") +
+          }).join("") + "</div>" : cf === "social" ? '<p class="hint">A social media post. Copy it and share it wherever you like.</p>' : '<p class="hint">' + (promoGroups().length ? "None of your promo groups take promos on " + DAYS[d] + "." : "Add your promo groups in") +  ' <a href="#groups" style="color:var(--gold)">Groups &amp; offers</a>' + (promoGroups().length ? " to change their days." : ".") + "</p>") +
           (today.length && off ? '<p class="hint">' + off + (off === 1 ? " group doesn\u2019t" : " groups don\u2019t") + " take promos on " + DAYS[d] + '. <a href="#groups" style="color:var(--gold)">Change days</a></p>' : "") +
         "</div>" +
         '<div class="panel"><div class="row"><label for="moveDay" class="label" style="margin:0">Move to</label><select id="moveDay" style="width:auto">' + dayOptions(d) + "</select></div>" +
@@ -1110,30 +1160,34 @@
   /* ---------- groups ---------- */
   function renderGroups() {
     renderOffers();
-    $("gList").innerHTML = S.groups.length ? S.groups.map(function (g) {
+    function card(g) {
       var days = gDays(g);
       return '<div class="gcard" data-g="' + g.id + '"><div class="grow">' +
-        '<input type="text" aria-label="Group name" data-f="name" value="' + esc(g.name) + '" placeholder="Group name">' +
-        '<input class="glink" type="url" aria-label="Group link" data-f="link" value="' + esc(g.link) + '" placeholder="https://www.skool.com/...">' +
+        '<input type="text" aria-label="Name" data-f="name" value="' + esc(g.name) + '" placeholder="' + (g.mine ? "My community's name" : "Group name") + '">' +
+        '<input class="glink" type="url" aria-label="Link" data-f="link" value="' + esc(g.link) + '" placeholder="https://www.skool.com/...">' +
         '<button class="btn small danger" type="button" data-gdel>Remove</button></div>' +
-        '<div class="gdays" role="group" aria-label="What kind of group"><span class="gdl">This is</span>' +
-        '<button type="button" class="dchip' + (g.mine ? "" : " on") + '" data-gmine="0" aria-pressed="' + !g.mine + '">A promo group</button>' +
-        '<button type="button" class="dchip' + (g.mine ? " on" : "") + '" data-gmine="1" aria-pressed="' + !!g.mine + '">My community</button></div>' +
-        (g.mine ? '<p class="mine-note">Any post you set for this community shows it here, on any day. No limits to track.</p></div>' : "") +
-        (g.mine ? "" : '<div class="gdays" role="group" aria-label="Days you can promote here"><span class="gdl">Promo days</span>' +
+        (g.mine ? "" :
+        '<div class="gdays" role="group" aria-label="Days you can promote here"><span class="gdl">Promo days</span>' +
         DAYS.map(function (d, i) { return '<button type="button" class="dchip' + (days.indexOf(i) !== -1 ? " on" : "") + '" data-gday="' + i + '" aria-pressed="' + (days.indexOf(i) !== -1) + '">' + d.slice(0, 3) + "</button>"; }).join("") +
         "</div>" +
         '<div class="gdays" role="group" aria-label="Posts a day"><span class="gdl">Posts a day</span>' +
         [[1, "1"], [2, "2"], [0, "Unlimited"]].map(function (o) { return '<button type="button" class="dchip' + (gLimit(g) === o[0] ? " on" : "") + '" data-glim="' + o[0] + '" aria-pressed="' + (gLimit(g) === o[0]) + '">' + o[1] + "</button>"; }).join("") +
-        "</div></div>");
-    }).join("") : '<p class="hint">No groups yet. Add the communities you promote in.</p>';
+        "</div>") + "</div>";
+    }
+    var pg = promoGroups(), mg = mineGroups();
+    $("gList").innerHTML = pg.length ? pg.map(card).join("") : '<p class="hint">No promo groups yet. Add the groups where you share your offers.</p>';
+    $("cList").innerHTML = mg.length ? mg.map(card).join("") : '<p class="hint">None yet.</p>';
   }
-  $("gList").addEventListener("input", function (e) {
+  $("cAdd").addEventListener("click", function () {
+    S.groups.push({ id: uid(), name: "", link: "", mine: true }); save(); renderGroups();
+    var ins = $("cList").querySelectorAll('[data-f="name"]'); ins[ins.length - 1].focus();
+  });
+  $("grpWrap").addEventListener("input", function (e) {
     var row = e.target.closest("[data-g]"); if (!row) return;
     var g = S.groups.find(function (x) { return x.id === row.getAttribute("data-g"); });
     g[e.target.getAttribute("data-f")] = e.target.value.trim(); save();
   });
-  $("gList").addEventListener("click", function (e) {
+  $("grpWrap").addEventListener("click", function (e) {
     var mc = e.target.closest("[data-gmine]");
     if (mc) {
       var gm = S.groups.find(function (x) { return x.id === mc.closest("[data-g]").getAttribute("data-g"); });
