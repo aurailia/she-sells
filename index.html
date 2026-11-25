@@ -144,6 +144,18 @@
     color: var(--muted); background: transparent;
     border: 1px solid rgba(216, 191, 208, 0.4); border-radius: 999px; padding: 8px 14px;
   }
+  .upgrade-list { list-style: none; padding: 0; margin: 0 0 14px; text-align: left; display: inline-block; }
+  .upgrade-list li { padding-left: 1.4em; position: relative; margin: 6px 0; opacity: 0.9; }
+  .upgrade-list li::before { content: '\2726'; position: absolute; left: 0; color: var(--gold); }
+  .ways { display: grid; gap: 10px; }
+  .way {
+    text-align: left; width: 100%; padding: 14px 16px; border-radius: 14px; cursor: pointer;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(232,196,120,0.35); color: inherit; font: inherit;
+  }
+  .way strong { display: block; font-size: 1rem; margin-bottom: 4px; }
+  .way span { display: block; font-size: 0.9rem; opacity: 0.85; line-height: 1.45; }
+  .way.on { background: var(--gold); border-color: var(--gold); color: var(--plum-deep); }
+  .way.on span { opacity: 1; }
   .tone.on { color: var(--plum-deep); background: var(--gold); border-color: var(--gold); font-weight: 600; }
   .voice-row { display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-top: 8px; }
   .voice-note { font-size: 12px; color: var(--muted); }
@@ -294,6 +306,11 @@
         <div class="tones" id="toneRow"></div>
       </div>
 
+      <div class="card step-card" id="wayCard" hidden>
+        <div class="step-head"><span class="step-num"></span><h3>Pick how you want to build it</h3></div>
+        <div class="ways" id="wayRow"></div>
+      </div>
+
       <div class="card step-card" id="questionsCard">
         <div class="step-head"><span class="step-num"></span><h3>Answer the questions</h3></div>
         <p class="hint" id="voiceTip">Type your answers, or tap Speak and just talk it out. Ramble. It doesn't need to sound polished.</p>
@@ -347,8 +364,16 @@
       </div>
 
       <div class="card upgrade">
-        <h3>Learn how you're designed to sell</h3>
-        <p class="muted">Inside Promote By Design, you'll learn your Human Design and how you're naturally built to sell. Then it helps you write a whole week of promos in your voice, for She Promotes&trade; and every other group you post in. It's waiting for you in premium.</p>
+        <h3>Make your AI personal</h3>
+        <p class="muted">Use a Project in Claude or ChatGPT. It's a space that remembers your rules, your instructions, and the documents about your business and who you are, so you don't start from zero every time. Already have one? Use it. Don't have one yet? Now's a great time to start one.</p>
+        <p class="muted">Then upload two things to your Project:</p>
+        <ul class="upgrade-list">
+          <li>Your Client Mirror Snapshot, from Part 2 of She Sells&trade;</li>
+          <li>Your Human Design chart. A free chart works, as a screenshot or PDF.</li>
+        </ul>
+        <p class="muted">Now your AI knows your buyer and who you are.</p>
+        <h3>Want to go deeper with Human Design?</h3>
+        <p class="muted">That's Promote By Design, inside Premium. It's my app that shows you how you're designed to show up, promote, and sell, using my rules for how Human Design and marketing work together. You don't need to know anything about Human Design to use it. Download your blueprint and add it to your Project too.</p>
         <a class="btn btn-primary" href="https://www.skool.com/she-promotes-7924/plans" target="_blank" rel="noopener">Upgrade to premium</a>
       </div>
 
@@ -445,7 +470,47 @@
       title: 'Build Your Client Mirror Snapshot',
       noTone: true,
       snapshot: 'build',
-      intro: 'Your Client Mirror Snapshot pulls your buyer’s real moments and exact words into one place. Make it once, save it, and upload it every time you write a post. This one works best in Claude, since you can upload several call transcripts at once. No transcripts? DMs, reviews, voice notes, or your own story work too.',
+      ways: [
+        { id: 'questions', title: 'Answer a few questions', text: 'Best if you have call transcripts, DMs, or reviews to upload. You answer 4 quick questions, then attach your files.' },
+        { id: 'quick', title: 'My AI already knows my client', text: 'Already talk to Claude or ChatGPT about your clients? Skip the questions. Copy one prompt into that chat or Project and it builds your Snapshot from what it knows.' }
+      ],
+      quickBuild: function () {
+        return [
+          'I want you to build a Client Mirror Snapshot for my business. It’s a reference sheet about my soulmate client that I’ll use every time I write a promo post, so it needs their real moments and their exact words.',
+          '',
+          'You already know a lot about me, my business, and my clients from our past chats, your memory of me, and any files in this Project. Use all of it. Don’t make me answer a long list of questions.',
+          '',
+          'HOW TO BUILD IT',
+          '',
+          'Start with everything you already know about what I do, who I love working with, my own story, and what my clients go through. Look for patterns, and pull out micro specific details: times of day, places, things they did, things they said. Use my clients’ exact words and my exact words wherever you have them.',
+          '',
+          'If there’s a section you don’t know enough to fill in well, don’t guess. Ask me about it at the end, one question at a time, up to 5 questions. If you know almost nothing about my clients yet, tell me that first and ask your questions before you build anything.',
+          '',
+          'Organize it into these sections:',
+          '',
+          'WHO THEY ARE: a short snapshot of their life right now.',
+          'THE MIDDLE OF THE NIGHT: what they’re scrolling, searching, and lying awake thinking about.',
+          'THE VOICE IN THEIR HEAD: the exact things they say to themselves when it’s hard.',
+          'WHAT THEY’VE ALREADY TRIED: and why it didn’t stick.',
+          'WHAT STAYING STUCK IS COSTING THEM: money, time, energy, relationships, confidence.',
+          'WHAT THEY REALLY WANT: the big desire, plus the first small win they’d notice.',
+          'WHAT MAKES THEM HESITATE: the worries that stop them from buying.',
+          'THEIR EXACT WORDS: a bank of 10 to 15 real phrases from what I’ve shared with you.',
+          'READY TO USE HOOKS: 5 opening lines for promos, each one built from a real moment above.',
+          '',
+          'RULES',
+          '- Protect my clients’ privacy. Leave out names, places, and anything that could identify a real person.',
+          '- Only use what you actually know from me. Don’t invent details, results, or quotes.',
+          '- In THEIR EXACT WORDS, only list phrases a client or I actually said. If you only have a few, give me the few. Don’t pad it.',
+          '- Keep it simple and easy to scan. Short lines. CAPITAL LETTER headings. No em dashes, no markdown symbols.',
+          '- Use "they" for my client unless I say otherwise.',
+          '',
+          'When you’re done, give me the finished Snapshot as plain text in one block, so I can copy it all in one go. Then remind me to paste it into My Client Mirror Snapshot in the She Sells™ Prompt Library, so it’s added to every prompt automatically.',
+          '',
+          'Then ask me: "Does this feel like my client, or is anything missing or off?" Wait for my answer and update it if I want changes.'
+        ].join('\n');
+      },
+      intro: 'Your Client Mirror Snapshot pulls your buyer’s real moments and exact words into one place. Make it once, save it, and upload it every time you write a post. This one works best in Claude, since you can upload several call transcripts at once. No transcripts? DMs, reviews, voice notes, or your own story work too. And if Claude or ChatGPT already knows your clients from your chats, pick the second option below and skip the questions.',
       questions: [
         { id: 'help', label: 'What do you help people with, in your own words?', hint: '', placeholder: 'I help busy business owners get their inbox, invoices, and follow ups handled so nothing slips' },
         { id: 'called', label: 'Who do you feel most called to work with, and why them?', hint: 'The people you light up working with.', placeholder: 'Solo coaches who are great at their work but drowning in the admin side' },
@@ -755,6 +820,13 @@
     return p.snapshot === 'use' && hasSnap() && state.snapshot.include !== false;
   };
 
+  var wayFor = function (p) {
+    if (!p.ways) return '';
+    var w = answersFor(p).way;
+    return w === 'quick' ? 'quick' : 'questions';
+  };
+  var isQuick = function (p) { return wayFor(p) === 'quick'; };
+
   var hasAnyAnswer = function (p) {
     var saved = answersFor(p);
     return p.questions.some(function (q) {
@@ -782,6 +854,7 @@
   var SNAP_LINE = 'My Client Mirror Snapshot is at the end of this prompt. Read it first, pull my buyer’s exact words and moments from it, and use it to fill in anything my answers leave out.';
 
   var buildFor = function (p) {
+    if (isQuick(p) && p.quickBuild) return p.quickBuild();
     var text = p.build(filledAnswers(p), toneText(p));
     if (snapUsable(p)) {
       if (text.indexOf(ATTACH_LINE) !== -1) text = text.split(ATTACH_LINE).join(SNAP_LINE);
@@ -895,15 +968,20 @@
 
   var orderSteps = function (p) {
     var ids;
-    if (p.snapshot === 'build') ids = ['questionsCard', 'copyCard', 'snapCard'];
+    if (p.snapshot === 'build') ids = ['wayCard', 'questionsCard', 'copyCard', 'snapCard'];
     else if (p.snapshot === 'use') ids = ['snapCard', 'toneCard', 'questionsCard', 'copyCard'];
     else ids = ['toneCard', 'questionsCard', 'copyCard'];
     if (p.noTone) ids = ids.filter(function (id) { return id !== 'toneCard'; });
-    if (!p.questions.length) ids = ids.filter(function (id) { return id !== 'questionsCard'; });
-    document.getElementById('saveBtn').hidden = !p.questions.length;
-    document.getElementById('clearBtn').hidden = !p.questions.length;
+    if (!p.ways) ids = ids.filter(function (id) { return id !== 'wayCard'; });
+    var quick = isQuick(p);
+    var askQs = p.questions.length && !quick;
+    if (!askQs) ids = ids.filter(function (id) { return id !== 'questionsCard'; });
+    document.getElementById('saveBtn').hidden = !askQs;
+    document.getElementById('clearBtn').hidden = !askQs;
+    document.getElementById('savePanel').hidden = true;
+    document.getElementById('confirmRow').hidden = true;
     var stepsEl = document.getElementById('steps');
-    ['snapCard', 'toneCard', 'questionsCard', 'copyCard'].forEach(function (id) {
+    ['snapCard', 'wayCard', 'toneCard', 'questionsCard', 'copyCard'].forEach(function (id) {
       document.getElementById(id).hidden = ids.indexOf(id) === -1;
     });
     ids.forEach(function (id, i) {
@@ -915,7 +993,11 @@
     var copyTitle = document.getElementById('copyTitle');
     var copyIntro = document.getElementById('copyIntro');
     var chatgptBtn = document.getElementById('chatgptBtn');
-    if (p.snapshot === 'build') {
+    if (p.snapshot === 'build' && quick) {
+      copyTitle.textContent = 'Copy your prompt';
+      copyIntro.textContent = 'Tap Copy my prompt. Open the Claude or ChatGPT chat or Project where you talk about your clients, paste it in, and hit enter. No files needed.';
+      chatgptBtn.hidden = false;
+    } else if (p.snapshot === 'build') {
       copyTitle.textContent = 'Copy your prompt into Claude';
       copyIntro.textContent = 'Tap Copy my prompt, then Open Claude. Paste it in, attach your call transcripts or DMs with the paperclip, and hit enter.';
       chatgptBtn.hidden = true;
@@ -963,6 +1045,37 @@
       });
       toneRowEl.appendChild(b);
     });
+    }
+
+    var wayRowEl = document.getElementById('wayRow');
+    wayRowEl.innerHTML = '';
+    if (p.ways) {
+      p.ways.forEach(function (w) {
+        var wb = document.createElement('button');
+        wb.type = 'button';
+        var isOn = wayFor(p) === w.id;
+        wb.className = 'way' + (isOn ? ' on' : '');
+        wb.setAttribute('aria-pressed', isOn ? 'true' : 'false');
+        var st = document.createElement('strong');
+        st.textContent = w.title;
+        var sp = document.createElement('span');
+        sp.textContent = w.text;
+        wb.appendChild(st);
+        wb.appendChild(sp);
+        wb.addEventListener('click', function () {
+          stopVoice();
+          answersFor(p).way = w.id;
+          save();
+          Array.prototype.forEach.call(wayRowEl.children, function (el, i) {
+            var on = p.ways[i].id === w.id;
+            el.classList.toggle('on', on);
+            el.setAttribute('aria-pressed', on ? 'true' : 'false');
+          });
+          orderSteps(p);
+          updatePreview();
+        });
+        wayRowEl.appendChild(wb);
+      });
     }
 
     orderSteps(p);
@@ -1217,7 +1330,7 @@
 
   document.getElementById('copyBtn').addEventListener('click', function () {
     var p = findPrompt(state.current);
-    if (p.questions.length && !hasAnyAnswer(p) && !snapUsable(p)) { showStatus('Answer a few questions first, then copy.'); return; }
+    if (p.questions.length && !isQuick(p) && !hasAnyAnswer(p) && !snapUsable(p)) { showStatus('Answer a few questions first, then copy.'); return; }
     var text = buildFor(p);
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(function () {
@@ -1287,7 +1400,7 @@
     snapIntro.innerHTML = '';
     if (p.snapshot === 'build') {
       title.textContent = 'Paste your finished Snapshot here';
-      snapIntro.appendChild(document.createTextNode('Once Claude builds your Snapshot, copy it and paste it here. It saves on this device and gets added to your She Sells\u2122 prompts from here on, so you never have to upload it again.'));
+      snapIntro.appendChild(document.createTextNode('Once Claude or ChatGPT builds your Snapshot, copy it and paste it here. It saves on this device and gets added to your She Sells\u2122 prompts from here on, so you never have to upload it again.'));
       return;
     }
     title.textContent = 'Add your Client Mirror Snapshot (optional)';
