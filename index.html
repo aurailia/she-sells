@@ -863,7 +863,7 @@ Aurailia ✦
     {
       id: 'part-1',
       folder: 'Why People Buy',
-      nav: 'Part 1: The Feeling First',
+      nav: 'Part 1: They Buy the Feeling First',
       lesson: 'Why People Buy, Part 1',
       title: 'They Buy the Feeling First',
       lessonUrl: 'https://www.skool.com/she-promotes-7924/classroom/6a4aeeb3?md=aab7fcd0656844c7af55e58159fb5e2f',
@@ -933,7 +933,7 @@ Aurailia ✦
     {
       id: 'part-2-mirror',
       folder: 'Why People Buy',
-      nav: 'Part 2: Client Mirror Snapshot',
+      nav: 'Part 2: Your Client Mirror Snapshot',
       lesson: 'Why People Buy, Part 2',
       title: 'Build Your Client Mirror Snapshot',
       noTone: true,
@@ -1037,7 +1037,7 @@ Aurailia ✦
       id: 'part-2',
       folder: 'Why People Buy',
       snapshot: 'use',
-      nav: 'Part 2: The “That’s Me” Post',
+      nav: 'Part 2: They Buy When They Think “That’s Me”',
       lesson: 'Why People Buy, Part 2',
       title: 'They Buy When They Think “That’s Me”',
       intro: 'This prompt helps you open your promo with a moment so specific your buyer stops scrolling and thinks, “that’s me.” Add your Client Mirror Snapshot in step 1 and your post gets even better.',
@@ -1111,7 +1111,7 @@ Aurailia ✦
     {
       id: 'part-4',
       folder: 'Why People Buy',
-      nav: 'Part 4: Check Your Post',
+      nav: 'Part 4: The Real Reason They Don’t Buy',
       lesson: 'Why People Buy, Part 4',
       title: 'Check Your Post for What Makes Them Pause',
       snapshot: 'use',
@@ -1158,7 +1158,7 @@ Aurailia ✦
     {
       id: 'part-5',
       folder: 'Why People Buy',
-      nav: 'Part 5: Share Before You Sell',
+      nav: 'Part 5: Why They Like It But Don’t Click',
       lesson: 'Why People Buy, Part 5',
       title: 'Share Before You Sell',
       snapshot: 'use',
@@ -1267,7 +1267,7 @@ Aurailia ✦
     {
       id: 'marketing-bestie',
       folder: 'Your Marketing Bestie',
-      nav: 'Set Up Your Bestie',
+      nav: 'Meet Your Marketing Bestie',
       lesson: 'Your Marketing Bestie',
       title: 'Meet Your Marketing Bestie',
       page: 'bestie',
@@ -1423,9 +1423,10 @@ Aurailia ✦
       b.className = 'pill' + (p.id === state.current ? ' active' : '');
       var num = document.createElement('span');
       num.className = 'num';
-      num.textContent = String(count);
+      var partMatch = /^Part (\w+): (.*)$/.exec(p.nav);
+      num.textContent = partMatch ? partMatch[1] : String(count);
       var txt = document.createElement('span');
-      txt.textContent = p.nav;
+      txt.textContent = partMatch ? partMatch[2] : p.nav;
       b.appendChild(num);
       b.appendChild(txt);
       b.addEventListener('click', function () { select(p.id); setMenu(false); window.scrollTo(0, 0); });
