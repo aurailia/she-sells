@@ -12,20 +12,22 @@
     --plum-deep: #2a1028;
     --plum: #3d1a3a;
     --plum-soft: #52264e;
-    --card: rgba(255, 255, 255, 0.06);
+    --card: rgba(0, 0, 0, 0.22);
     --card-border: rgba(232, 196, 122, 0.25);
     --gold: #e8c47a;
     --gold-bright: #f3d89b;
     --blush: #f4b6c8;
     --blush-soft: #f9d7e1;
-    --text: #fbeff3;
-    --muted: #d8bfd0;
+    --text: #fff8fb;
+    --muted: #f0e1ea;
     --input-bg: rgba(255, 255, 255, 0.08);
     --input-border: rgba(244, 182, 200, 0.35);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   [hidden] { display: none !important; }
+  html { font-size: 17px; }
   body {
+    font-size: 17px;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background: radial-gradient(ellipse at top, var(--plum-soft) 0%, var(--plum) 40%, var(--plum-deep) 100%);
     background-attachment: fixed;
@@ -43,14 +45,14 @@
     background: rgba(30, 10, 28, 0.72);
     border-right: 1px solid rgba(232, 196, 122, 0.18);
   }
-  .side-brand { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 26px; font-weight: 600; margin-bottom: 2px; }
+  .side-brand { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 27px; font-weight: 600; margin-bottom: 2px; }
   .side-brand span { color: var(--blush); font-style: italic; }
-  .side-sub { font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 22px; }
-  .folder { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin: 18px 4px 8px; }
+  .side-sub { font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 22px; }
+  .folder { font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin: 18px 4px 8px; }
   .folder:first-child { margin-top: 0; }
   .pill {
     display: flex; align-items: center; gap: 10px; width: 100%; text-align: left;
-    font-family: inherit; font-size: 14px; font-weight: 500;
+    font-family: inherit; font-size: 15px; font-weight: 500;
     color: var(--muted); background: transparent;
     border: 1px solid transparent; border-radius: 12px;
     padding: 10px 12px; cursor: pointer; margin-bottom: 6px;
@@ -59,12 +61,12 @@
   .pill .num {
     flex: 0 0 24px; height: 24px; border-radius: 50%;
     display: inline-flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 600;
+    font-size: 13px; font-weight: 600;
     border: 1px solid rgba(216, 191, 208, 0.4); color: var(--muted);
   }
   .pill.active { color: var(--text); background: rgba(232, 196, 122, 0.14); border-color: rgba(232, 196, 122, 0.45); font-weight: 600; }
   .pill.active .num { border-color: var(--gold); color: var(--gold-bright); }
-  .side-note { font-size: 12px; color: var(--muted); margin-top: 22px; padding: 0 4px; }
+  .side-note { font-size: 13px; color: var(--muted); margin-top: 22px; padding: 0 4px; }
 
   .main { flex: 1; min-width: 0; }
   .topbar { display: none; }
@@ -89,28 +91,28 @@
       padding: 10px 16px;
     }
     .menu-btn {
-      font-family: inherit; font-size: 14px; font-weight: 600;
+      font-family: inherit; font-size: 15px; font-weight: 600;
       color: var(--plum-deep); background: var(--gold);
       border: none; border-radius: 999px; padding: 8px 14px; cursor: pointer;
     }
-    .topbar-step { font-size: 13px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .topbar-step { font-size: 14px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   }
 
-  .wrap { max-width: 680px; margin: 0 auto; padding: 0 16px 72px; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 16px 72px; }
 
   .hero { text-align: center; padding: 40px 0 22px; }
-  .eyebrow { font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 10px; }
-  h1 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 46px; font-weight: 600; line-height: 1.05; }
+  .eyebrow { font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 10px; }
+  h1 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 47px; font-weight: 600; line-height: 1.05; }
   h1 span { color: var(--blush); font-style: italic; }
-  .lede { color: var(--muted); margin-top: 12px; font-size: 16px; }
+  .lede { color: var(--muted); margin-top: 12px; font-size: 17px; }
 
   .card { background: var(--card); border: 1px solid var(--card-border); border-radius: 20px; padding: 22px 20px; margin-bottom: 18px; }
-  .lesson-tag { font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 4px; }
-  .card h2 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 32px; font-weight: 600; line-height: 1.15; margin-bottom: 10px; }
-  .card h3 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 24px; font-weight: 600; color: var(--gold-bright); margin-bottom: 10px; }
+  .lesson-tag { font-size: 13px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 4px; }
+  .card h2 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 33px; font-weight: 600; line-height: 1.15; margin-bottom: 10px; }
+  .card h3 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 25px; font-weight: 600; color: var(--gold-bright); margin-bottom: 10px; }
   .muted { color: var(--muted); }
   .lesson-link {
-    display: inline-block; margin-top: 14px; font-size: 14px; font-weight: 600;
+    display: inline-block; margin-top: 14px; font-size: 15px; font-weight: 600;
     color: var(--gold-bright); text-decoration: none;
     border-bottom: 1px solid rgba(243, 216, 155, 0.5); padding-bottom: 2px;
   }
@@ -123,33 +125,33 @@
 
   .field { margin-bottom: 18px; }
   .field:last-child { margin-bottom: 0; }
-  label { display: block; font-weight: 600; font-size: 15px; color: var(--blush-soft); margin-bottom: 4px; }
-  .hint { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+  label { display: block; font-weight: 600; font-size: 16px; color: var(--blush-soft); margin-bottom: 4px; }
+  .hint { font-size: 14px; color: var(--muted); margin-bottom: 8px; }
   textarea {
-    width: 100%; font-family: inherit; font-size: 16px; color: var(--text);
+    width: 100%; font-family: inherit; font-size: 17px; color: var(--text);
     background: var(--input-bg); border: 1px solid var(--input-border);
     border-radius: 12px; padding: 12px 14px; outline: none; resize: vertical; min-height: 84px;
   }
   input[type="text"] {
-    width: 100%; font-family: inherit; font-size: 16px; color: var(--text);
+    width: 100%; font-family: inherit; font-size: 17px; color: var(--text);
     background: var(--input-bg); border: 1px solid var(--input-border);
     border-radius: 12px; padding: 12px 14px; outline: none;
   }
-  textarea::placeholder, input::placeholder { color: rgba(251, 239, 243, 0.4); }
+  textarea::placeholder, input::placeholder { color: rgba(251, 239, 243, 0.6); }
   textarea:focus, input[type="text"]:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(232, 196, 122, 0.18); }
 
   .tones { display: flex; flex-wrap: wrap; gap: 8px; }
   .tone {
-    font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer;
+    font-family: inherit; font-size: 15px; font-weight: 500; cursor: pointer;
     color: var(--muted); background: transparent;
     border: 1px solid rgba(216, 191, 208, 0.4); border-radius: 999px; padding: 8px 14px;
   }
   .upgrade-list { list-style: none; padding: 0; margin: 0 0 14px; text-align: left; display: inline-block; }
-  .upgrade-list li { padding-left: 1.4em; position: relative; margin: 6px 0; opacity: 0.9; }
+  .upgrade-list li { padding-left: 1.4em; position: relative; margin: 6px 0;  }
   .upgrade-list li::before { content: '\2726'; position: absolute; left: 0; color: var(--gold); }
   .inline-link-btn { margin: 4px 0 16px; }
   .inline-link { color: var(--gold); text-decoration: underline; }
-  .bestie-text { font-size: 15px; line-height: 1.6; margin-bottom: 12px; }
+  .bestie-text { font-size: 16px; line-height: 1.6; margin-bottom: 12px; }
   .bestie-list { list-style: none; padding: 0; margin: 0 0 14px; }
   .bestie-list li { padding-left: 1.4em; position: relative; margin: 8px 0; line-height: 1.55; }
   .bestie-list li::before { content: '\2726'; position: absolute; left: 0; color: var(--gold); }
@@ -160,14 +162,14 @@
     background: rgba(255,255,255,0.04); border: 1px solid rgba(232,196,120,0.35); color: inherit; font: inherit;
   }
   .way strong { display: block; font-size: 1rem; margin-bottom: 4px; }
-  .way span { display: block; font-size: 0.9rem; opacity: 0.85; line-height: 1.45; }
+  .way span { display: block; font-size: 0.9rem;  line-height: 1.45; }
   .way.on { background: var(--gold); border-color: var(--gold); color: var(--plum-deep); }
   .way.on span { opacity: 1; }
   .tone.on { color: var(--plum-deep); background: var(--gold); border-color: var(--gold); font-weight: 600; }
   .voice-row { display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-top: 8px; }
-  .voice-note { font-size: 12px; color: var(--muted); }
+  .voice-note { font-size: 13px; color: var(--muted); }
   .mic {
-    font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer;
+    font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer;
     display: inline-flex; align-items: center; gap: 8px;
     color: var(--gold-bright); background: rgba(232, 196, 122, 0.1);
     border: 1px solid rgba(232, 196, 122, 0.5); border-radius: 999px; padding: 8px 14px;
@@ -187,10 +189,10 @@
   .saved-row + .saved-row { border-top: 1px solid rgba(255,255,255,0.08); }
   .saved-info { flex: 1 1 160px; min-width: 0; }
   .saved-name { font-weight: 600; color: var(--blush-soft); overflow-wrap: anywhere; }
-  .saved-date { font-size: 12px; color: var(--muted); }
+  .saved-date { font-size: 13px; color: var(--muted); }
   .saved-btns { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-  .saved-btns .ask { font-size: 13px; color: var(--muted); }
-  .btn-sm { padding: 8px 14px; font-size: 14px; flex: none; }
+  .saved-btns .ask { font-size: 14px; color: var(--muted); }
+  .btn-sm { padding: 8px 14px; font-size: 15px; flex: none; }
 
   .snap-card { border-color: rgba(244, 182, 200, 0.4); }
   .step-head { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
@@ -198,7 +200,7 @@
   .step-num {
     flex: 0 0 34px; height: 34px; border-radius: 50%;
     display: inline-flex; align-items: center; justify-content: center;
-    font-size: 15px; font-weight: 700; color: var(--plum-deep);
+    font-size: 16px; font-weight: 700; color: var(--plum-deep);
     background: linear-gradient(135deg, var(--gold), var(--blush));
   }
   .step-card > .hint { margin-bottom: 16px; }
@@ -206,16 +208,16 @@
   .snap-text { min-height: 120px; margin-top: 4px; }
   .snap-small { margin-top: 10px; margin-bottom: 0; }
   .snap-status { font-weight: 600; color: var(--gold-bright); margin-bottom: 10px; }
-  .snap-status span { font-weight: 400; color: var(--muted); font-size: 14px; }
-  .check { display: flex; align-items: center; gap: 10px; font-weight: 500; font-size: 15px; color: var(--text); cursor: pointer; margin: 0; }
+  .snap-status span { font-weight: 400; color: var(--muted); font-size: 15px; }
+  .check { display: flex; align-items: center; gap: 10px; font-weight: 500; font-size: 16px; color: var(--text); cursor: pointer; margin: 0; }
   .check input { width: 20px; height: 20px; accent-color: var(--gold); flex: none; }
-  .ask { font-size: 14px; color: var(--muted); align-self: center; }
+  .ask { font-size: 15px; color: var(--muted); align-self: center; }
   .file-input { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; pointer-events: none; }
   .intro-link { color: var(--gold-bright); }
 
   .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
   .btn {
-    font-family: inherit; font-size: 15px; font-weight: 600; border-radius: 999px;
+    font-family: inherit; font-size: 16px; font-weight: 600; border-radius: 999px;
     padding: 12px 20px; cursor: pointer; border: none; text-decoration: none;
     display: inline-flex; align-items: center; justify-content: center;
   }
@@ -223,21 +225,21 @@
   .btn-ghost { background: transparent; color: var(--text); border: 1px solid rgba(216, 191, 208, 0.4); flex: 1 1 auto; }
   .btn-quiet { background: transparent; color: var(--muted); border: none; padding: 12px 8px; font-weight: 500; text-decoration: underline; }
   .btn-danger { background: var(--blush); color: var(--plum-deep); }
-  .status { font-size: 14px; color: var(--gold-bright); margin-top: 10px; min-height: 22px; }
+  .status { font-size: 15px; color: var(--gold-bright); margin-top: 10px; min-height: 22px; }
 
   details { margin-top: 16px; }
-  summary { cursor: pointer; color: var(--muted); font-size: 14px; }
-  .preview { background: rgba(0,0,0,0.25); border-radius: 12px; padding: 14px; font-size: 13px; white-space: pre-wrap; margin-top: 10px; color: var(--muted); }
+  summary { cursor: pointer; color: var(--muted); font-size: 15px; }
+  .preview { background: rgba(0,0,0,0.25); border-radius: 12px; padding: 14px; font-size: 14px; white-space: pre-wrap; margin-top: 10px; color: var(--muted); }
 
   .upgrade { text-align: center; }
   .upgrade p { margin-bottom: 14px; }
   .upgrade .btn { flex: none; }
 
-  .signoff { text-align: center; margin-top: 28px; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 21px; color: var(--blush-soft); }
+  .signoff { text-align: center; margin-top: 28px; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 22px; color: var(--blush-soft); }
   .signoff .sig { color: var(--gold); }
 
   @media (max-width: 480px) {
-    h1 { font-size: 38px; }
+    h1 { font-size: 39px; }
     .card { padding: 20px 16px; }
   }
 </style>
@@ -249,7 +251,7 @@
     <div class="side-brand">She <span>Sells&trade;</span></div>
     <div class="side-sub">Prompt Library</div>
     <nav id="nav"></nav>
-    <p class="side-note">New prompts are added every Wednesday with each Sales Tip.</p>
+    <p class="side-note">New prompts are added with each new lesson.</p>
   </aside>
   <div class="scrim" id="scrim"></div>
 
