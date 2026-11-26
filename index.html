@@ -411,7 +411,7 @@
             <summary>See the instructions</summary>
             <div class="preview" id="insText">You're my Marketing Bestie. You help me write promos and posts for Skool communities.
 
-Before you write anything, read the She Promotes™ Promo Playbook in this Project and follow it every time. If my Client Mirror Snapshot, my Human Design chart, or my Promote By Design blueprint are in this Project, read those too and use them.
+Before you write anything, read the She Promotes™ Promo Playbook in this Project and follow it every time. If my About Me, my Client Mirror Snapshot, my Human Design chart, or my Promote By Design blueprint are in this Project, read those too and use them.
 
 Who you are: the friend who's really good at marketing. Warm, a little witty, and honest in a kind way. Talk to me like a person, never like a tool or a textbook.
 
@@ -428,18 +428,33 @@ How you help me:
 
         <div class="card step-card">
           <div class="step-head"><span class="step-num">4</span><h3>Make it personal</h3></div>
-          <p class="bestie-text">The Playbook teaches your AI how to write a promo. These teach it who it's writing for, and who's doing the talking. Upload them to the same Project:</p>
+          <p class="bestie-text">The Playbook teaches your AI how to write a promo. Now it needs to know who's doing the talking, and who it's writing for.</p>
+          <p class="bestie-text"><strong>Does your AI already know you?</strong> If you use Claude or ChatGPT for your business, it probably knows a lot already. Copy this prompt into that chat or your Project, and it writes two things for you in one go:</p>
           <ul class="bestie-list">
-            <li><strong>Your Client Mirror Snapshot</strong>, so it knows your buyer. It's the same Snapshot from Part 2. If you saved it in this library, tap Download my Snapshot below. Don't have one yet? <a href="#part-2-mirror" class="inline-link">Build it here</a>.</li>
-            <li><strong>Your Human Design chart</strong>, so it knows you. A free chart works, as a screenshot or PDF.</li>
+            <li><strong>About Me</strong>: your business, your offers, your story, and how you talk, so your posts sound like you.</li>
+            <li><strong>Your Client Mirror Snapshot</strong>: your buyer's real moments and exact words, so your posts speak to them.</li>
           </ul>
-          <div class="actions" id="snapDlRow" hidden>
+          <div class="actions">
+            <button class="btn btn-primary" id="aboutCopy" type="button">Copy the About Me + Snapshot prompt</button>
+          </div>
+          <p class="status" id="aboutStatus" aria-live="polite"></p>
+          <details>
+            <summary>See the prompt</summary>
+            <div class="preview" id="aboutText"></div>
+          </details>
+          <p class="bestie-text">It'll ask you a few questions about anything it doesn't know yet. Then save both in your Project as files.</p>
+          <p class="bestie-text"><strong>Starting fresh, or have call transcripts to use?</strong> <a href="#part-2-mirror" class="inline-link">Build your Snapshot step by step here</a>.</p>
+          <div id="snapDlRow" hidden>
+          <p class="bestie-text">You already saved a Snapshot in this library. Download it and add it to your Project.</p>
+          <div class="actions">
             <button class="btn btn-ghost" id="snapDownload" type="button">Download my Snapshot</button>
           </div>
+          </div>
           <p class="status" id="snapDlStatus" aria-live="polite"></p>
+          <p class="bestie-text"><strong>Add your Human Design chart too</strong>, so it knows how you're built. A free chart works, as a screenshot or PDF.</p>
           <p class="bestie-text"><strong>Want to go deeper with Human Design?</strong> That's Promote By Design, inside Premium. It's my app that shows you how you're designed to show up, promote, and sell, using my rules for how Human Design and marketing work together. Download your blueprint and add it to your Project too.</p>
           <div class="actions">
-            <a class="btn btn-ghost" href="https://www.skool.com/she-promotes-7924/plans" target="_blank" rel="noopener">See Premium</a>
+            <a class="btn btn-ghost" href="https://www.skool.com/she-promotes/plans" target="_blank" rel="noopener">See Premium</a>
           </div>
         </div>
 
@@ -472,7 +487,7 @@ How you help me:
         <a class="btn btn-ghost inline-link-btn" href="#marketing-bestie">Set up your Marketing Bestie</a>
         <h3>Want to go deeper with Human Design?</h3>
         <p class="muted">That's Promote By Design, inside Premium. It's my app that shows you how you're designed to show up, promote, and sell, using my rules for how Human Design and marketing work together. You don't need to know anything about Human Design to use it. Download your blueprint and add it to your Project too.</p>
-        <a class="btn btn-primary" href="https://www.skool.com/she-promotes-7924/plans" target="_blank" rel="noopener">Upgrade to premium</a>
+        <a class="btn btn-primary" href="https://www.skool.com/she-promotes/plans" target="_blank" rel="noopener">Upgrade to premium</a>
       </div>
 
       <div class="signoff">
@@ -497,6 +512,7 @@ This is everything from the She Sells™ lessons and prompts, in one file. Each 
 Put it in your Project in Claude or ChatGPT, and your AI uses all of it every time you write. No more copying a prompt for each post. Just open your Project and ask.
 
 To make it personal, upload these to the same Project:
+✦ Your About Me, so it knows your business, your offers, your story, and how you talk
 ✦ Your Client Mirror Snapshot (from She Sells™, Part 2), so it knows your buyer
 ✦ Your Human Design chart, so it knows you
 ✦ Your Promote By Design blueprint, if you're a Premium member, so it knows how you're designed to show up and promote
@@ -506,7 +522,8 @@ To make it personal, upload these to the same Project:
 You're my Marketing Bestie. Use this playbook every time I ask for help with a promo, a post, a title, or a comment on Skool.
 
 ✦ Write in MY voice. Use my words, my phrases, and the way I talk. This playbook is about how to shape a post. For how I sound, go by my own writing. If you don't have any yet, ask me to paste a post or a caption I've written, and match it.
-✦ If my Client Mirror Snapshot is in this Project, read it first. Use my buyer's real moments and exact words.
+✦ If my About Me is in this Project, read it first. Use it for my offers, my story, and how I talk.
+✦ If my Client Mirror Snapshot is in this Project, read it too. Use my buyer's real moments and exact words.
 ✦ If my Promote By Design blueprint is in this Project, follow how it says I'm designed to show up, share, and sell.
 ✦ If only my Human Design chart is here, let it gently shape the way I show up. Don't make big claims from it, and don't mention Human Design in my posts unless I ask.
 ✦ Never invent results, numbers, prices, testimonials, or quotes. If you need something I didn't give you, ask me.
@@ -866,7 +883,7 @@ Aurailia ✦
       nav: 'Part 1: They Buy the Feeling First',
       lesson: 'Why People Buy, Part 1',
       title: 'They Buy the Feeling First',
-      lessonUrl: 'https://www.skool.com/she-promotes-7924/classroom/6a4aeeb3?md=aab7fcd0656844c7af55e58159fb5e2f',
+      lessonUrl: 'https://www.skool.com/she-promotes/classroom/6a4aeeb3?md=aab7fcd0656844c7af55e58159fb5e2f',
       intro: 'Your buyer decides with their feelings first. This prompt helps you open your promo with the moment they live, show them what could be, and then bring in your offer.',
       questions: [
         { id: 'offer', label: 'What do you offer, and who is it for?', hint: '', placeholder: 'A gut health community on Skool for people who are tired of feeling bloated and confused about food' },
@@ -1531,8 +1548,11 @@ Aurailia ✦
     return el ? el.textContent.replace(/^\s+|\s+$/g, '') + '\n' : '';
   };
 
+  var ABOUT_PROMPT = "I'm setting up my Marketing Bestie, a Project that helps me write promos and posts for Skool communities. I need you to write two documents I'll save in this Project: ABOUT ME and MY CLIENT MIRROR SNAPSHOT.\n\nYou already know a lot about me, my business, and my clients from our past chats, your memory of me, and any files in this Project. Use all of it. Don't make me answer a long list of questions.\n\nHOW TO BUILD THEM\nStart with everything you already know. Use my exact words and my clients' exact words wherever you have them. If there's a section you don't know enough to fill in well, don't guess. Ask me about it at the end, one question at a time, up to 6 questions in total. If you know almost nothing about me yet, tell me that first and ask your questions before you write anything.\n\nDOCUMENT 1: ABOUT ME\nWHO I AM: my name, what I do, and who I do it for, in a few lines.\nMY OFFERS: each offer with who it's for, what's included, the price if I've shared it, and where the link goes.\nMY STORY: why I do this work, and the parts of my story that help people trust me.\nWHAT I BELIEVE: what I stand for in my work, and what I'd never do.\nHOW I TALK: my tone, words and phrases I use a lot, how I use emojis, how I sign off, and words I'd never use. Pull this from things I've actually written.\nMY HUMAN DESIGN: my type, authority, profile, and defined or open centers, only if I've shared them with you.\n\nDOCUMENT 2: MY CLIENT MIRROR SNAPSHOT\nWHO THEY ARE: a short snapshot of their life right now.\nTHE MIDDLE OF THE NIGHT: what they're scrolling, searching, and lying awake thinking about.\nTHE VOICE IN THEIR HEAD: the exact things they say to themselves when it's hard.\nWHAT THEY'VE ALREADY TRIED: and why it didn't stick.\nWHAT STAYING STUCK IS COSTING THEM: money, time, energy, relationships, confidence.\nWHAT THEY REALLY WANT: the big desire, plus the first small win they'd notice.\nWHAT MAKES THEM HESITATE: the worries that stop them from buying.\nTHEIR EXACT WORDS: a bank of real phrases from what I've shared with you.\nREADY TO USE HOOKS: 5 opening lines for promos, each one built from a real moment above.\n\nRULES\n- Protect my clients' privacy. Leave out names, places, and anything that could identify a real person.\n- Only use what you actually know from me. Don't invent details, results, prices, or quotes.\n- In THEIR EXACT WORDS and HOW I TALK, only list things that were actually said or written. If you only have a few, give me the few.\n- Keep both simple and easy to scan. Short lines. CAPITAL LETTER headings. No em dashes, no markdown symbols.\n- Use \"they\" for my client unless I say otherwise.\n\nWhen you're done, give me each document as plain text in its own block, so I can copy each one in one go. Then remind me to save both as files in my Project, named \"About Me\" and \"My Client Mirror Snapshot.\"\n\nThen ask me: \"Does this feel like you and your client, or is anything missing or off?\" Wait for my answer and update them if I want changes.";
+
   var renderBestie = function () {
     document.getElementById('snapDlRow').hidden = !hasSnap();
+    document.getElementById('aboutText').textContent = ABOUT_PROMPT;
   };
 
   var orderSteps = function (p) {
@@ -2084,6 +2104,9 @@ Aurailia ✦
   });
   document.getElementById('pbCopy').addEventListener('click', function () {
     copyText(playbookText(), document.getElementById('pbStatus'), 'Copied! Paste it into your Project as a file or text 💖');
+  });
+  document.getElementById('aboutCopy').addEventListener('click', function () {
+    copyText(ABOUT_PROMPT, document.getElementById('aboutStatus'), 'Copied! Paste it into the chat or Project that knows you 💖');
   });
   document.getElementById('insCopy').addEventListener('click', function () {
     copyText(document.getElementById('insText').textContent, document.getElementById('insStatus'), 'Copied! Paste it into your Project’s instructions 💖');
