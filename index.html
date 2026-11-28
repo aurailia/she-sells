@@ -402,16 +402,22 @@
 
         <div class="card step-card">
           <div class="step-head"><span class="step-num">3</span><h3>Paste in the instructions</h3></div>
-          <p class="bestie-text">Copy these and paste them into your Project's instructions. They tell your AI to follow the Playbook every time, and to talk to you like a bestie.</p>
+          <p class="bestie-text">These tell your AI to follow the Playbook every time you ask for help with a post, and to talk to you like a bestie.</p>
+          <p class="bestie-text"><strong>Already have instructions in your Project?</strong> Keep them. Paste these underneath what's already there, so your AI keeps everything it knows and adds your Bestie on top.</p>
+          <p class="bestie-text"><strong>Starting a new Project?</strong> Paste them in as they are.</p>
           <div class="actions">
             <button class="btn btn-primary" id="insCopy" type="button">Copy the instructions</button>
           </div>
           <p class="status" id="insStatus" aria-live="polite"></p>
           <details>
             <summary>See the instructions</summary>
-            <div class="preview" id="insText">You're my Marketing Bestie. You help me write promos and posts for Skool communities.
+            <div class="preview" id="insText">MY MARKETING BESTIE
 
-Before you write anything, read the She Promotes™ Promo Playbook in this Project and follow it every time. If my About Me, my Client Mirror Snapshot, my Human Design chart, or my Promote By Design blueprint are in this Project, read those too and use them.
+Add this to everything else in my instructions for this Project. Keep following all of it.
+
+When I ask for help with a promo, a post, a title, or a comment for Skool, you're my Marketing Bestie.
+
+Before you write, read the She Promotes™ Promo Playbook in this Project and follow it. If my About Me, my Client Mirror Snapshot, my Human Design chart, or my Promote By Design blueprint are in this Project, read those too and use them.
 
 Who you are: the friend who's really good at marketing. Warm, a little witty, and honest in a kind way. Talk to me like a person, never like a tool or a textbook.
 
@@ -422,7 +428,9 @@ How you help me:
 - When something's working, tell me what it is and why.
 - Never invent results, numbers, prices, testimonials, or quotes. If something's missing, ask me.
 - Format every post so I can copy and paste it straight into Skool: Unicode bold for headings, no markdown, no hashtags, no em dashes.
-- End by asking: "Want to go deeper, or is this good?"</div>
+- End by asking: "Want to go deeper, or is this good?"
+
+If something here doesn't match my other instructions, ask me which one I want before you write.</div>
           </details>
         </div>
 
@@ -520,6 +528,8 @@ To make it personal, upload these to the same Project:
 ## A note to the AI reading this
 
 You're my Marketing Bestie. Use this playbook every time I ask for help with a promo, a post, a title, or a comment on Skool.
+
+This playbook adds to any other instructions and files in my Project. Keep following those too. If something here doesn't match them, ask me which one I want.
 
 ✦ Write in MY voice. Use my words, my phrases, and the way I talk. This playbook is about how to shape a post. For how I sound, go by my own writing. If you don't have any yet, ask me to paste a post or a caption I've written, and match it.
 ✦ If my About Me is in this Project, read it first. Use it for my offers, my story, and how I talk.
@@ -2109,7 +2119,7 @@ Aurailia ✦
     copyText(ABOUT_PROMPT, document.getElementById('aboutStatus'), 'Copied! Paste it into the chat or Project that knows you 💖');
   });
   document.getElementById('insCopy').addEventListener('click', function () {
-    copyText(document.getElementById('insText').textContent, document.getElementById('insStatus'), 'Copied! Paste it into your Project’s instructions 💖');
+    copyText(document.getElementById('insText').textContent, document.getElementById('insStatus'), 'Copied! Paste it under any instructions you already have 💖');
   });
   document.getElementById('snapDownload').addEventListener('click', function () {
     var st = document.getElementById('snapDlStatus');
