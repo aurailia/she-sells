@@ -155,6 +155,9 @@
   .bestie-list { list-style: none; padding: 0; margin: 0 0 14px; }
   .bestie-list li { padding-left: 1.4em; position: relative; margin: 8px 0; line-height: 1.55; }
   .bestie-list li::before { content: '\2726'; position: absolute; left: 0; color: var(--gold); }
+  .menu-item { margin: 12px 0 16px; }
+  .menu-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-weight: 600; }
+  .menu-head .menu-copy { flex: none; width: auto; padding: 6px 16px; min-height: 0; font-size: 14px; }
   .bestie-say { background: rgba(0,0,0,0.22); border-left: 3px solid var(--blush); border-radius: 10px; padding: 10px 14px; margin: 8px 0; font-style: italic; }
   .ways { display: grid; gap: 10px; }
   .way {
@@ -468,12 +471,67 @@ If something here doesn't match my other instructions, ask me which one I want b
 
         <div class="card step-card">
           <div class="step-head"><span class="step-num">5</span><h3>Say hi to your Bestie</h3></div>
-          <p class="bestie-text">Open a new chat inside your Project and try one of these:</p>
-          <div class="bestie-say">"Help me write a promo for my reading this week."</div>
-          <div class="bestie-say">"Check this post before I share it." (then paste it)</div>
-          <div class="bestie-say">"Give me 5 titles for my free workshop."</div>
-          <div class="bestie-say">"What's one tip I could share this week with no link?"</div>
-          <p class="bestie-text">She'll write it in your voice, add a little Bestie Note on why it works, and ask if you want to go deeper. 💖</p>
+          <p class="bestie-text">Open a new chat inside your Project and send this first. She'll tell you what she already knows about you, what's missing, and everything she can help with.</p>
+          <div class="bestie-say">Hi Bestie! 👋 I just set you up. Look at everything in this Project and tell me, in a few short lines, what you already know about me, my business, and my buyer, and what&#x27;s missing. Then show me the menu of things you can help me with, and ask me what I want to work on first.</div>
+          <div class="actions">
+            <button class="btn btn-primary" id="kickCopy" type="button">Copy my first message</button>
+          </div>
+          <p class="status" id="kickStatus" aria-live="polite"></p>
+          <p class="bestie-text">Anytime you're not sure what to ask, just type <strong>menu</strong> and she'll show you the list again.</p>
+        </div>
+
+        <div class="card step-card">
+          <div class="step-head"><span class="step-num">6</span><h3>Things to ask your Bestie</h3></div>
+          <p class="bestie-text">Copy one, paste it into your Project, and fill in the [brackets]. Or just talk to her like a friend. Short and messy is fine. She'll ask for anything she needs. 💖</p>
+          <div class="menu-item">
+            <div class="menu-head"><span>✍️ Promote my offer</span><button class="btn btn-ghost menu-copy" type="button" data-i="0">Copy</button></div>
+            <div class="bestie-say">Write a promo for my [offer]. It&#x27;s for [who it&#x27;s for]. The link goes to [where the link goes].</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-head"><span>🏡 Invite people to my community</span><button class="btn btn-ghost menu-copy" type="button" data-i="1">Copy</button></div>
+            <div class="bestie-say">Write a promo inviting people to join my community, [community name]. This week inside we&#x27;re [what&#x27;s happening]. Here&#x27;s the link: [link].</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-head"><span>🛍️ Promote a product</span><button class="btn btn-ghost menu-copy" type="button" data-i="2">Copy</button></div>
+            <div class="bestie-say">Write a promo for my [product]. It&#x27;s perfect for [who and when they&#x27;d use it]. The price is [price] and the link is [link].</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-head"><span>📅 Promote an event or workshop</span><button class="btn btn-ghost menu-copy" type="button" data-i="3">Copy</button></div>
+            <div class="bestie-say">Write a post for my [free workshop, live, or challenge] on [date and time]. They&#x27;ll walk away with [what they&#x27;ll get]. Sign up here: [link].</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-head"><span>🔍 Check my post before I share it</span><button class="btn btn-ghost menu-copy" type="button" data-i="4">Copy</button></div>
+            <div class="bestie-say">Check this post before I share it. Tell me what&#x27;s working and what might make someone pause, then give it back cleaned up: [paste your post]</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-head"><span>🎯 Give me title ideas</span><button class="btn btn-ghost menu-copy" type="button" data-i="5">Copy</button></div>
+            <div class="bestie-say">Give me 5 titles for my post about [what you&#x27;re promoting], each one using a different title starter.</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-head"><span>💡 Share what I know (no link)</span><button class="btn btn-ghost menu-copy" type="button" data-i="6">Copy</button></div>
+            <div class="bestie-say">Give me 5 tip ideas I could share this week with no link, based on what my buyer is going through. Then write the one I pick.</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-head"><span>📚 A lesson post for another group</span><button class="btn btn-ghost menu-copy" type="button" data-i="7">Copy</button></div>
+            <div class="bestie-say">Turn this into a lesson post I can share in a group that doesn&#x27;t allow promos: [your tip or idea]</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-head"><span>👋 My introduction post</span><button class="btn btn-ghost menu-copy" type="button" data-i="8">Copy</button></div>
+            <div class="bestie-say">Write my introduction post for [community name]. Make it interesting enough that people want to click and get to know me.</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-head"><span>🗓️ Plan my promos for the week</span><button class="btn btn-ghost menu-copy" type="button" data-i="9">Copy</button></div>
+            <div class="bestie-say">Help me plan my promos for this week. I&#x27;m promoting [your offers] and I post in [your groups and days]. Give me a different angle for each day.</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-head"><span>💬 Help me write a real comment</span><button class="btn btn-ghost menu-copy" type="button" data-i="10">Copy</button></div>
+            <div class="bestie-say">Help me write a supportive comment on this post that shows what I know, with no pitch and no link: [paste the post]</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-head"><span>🎨 Change the feel of a post</span><button class="btn btn-ghost menu-copy" type="button" data-i="11">Copy</button></div>
+            <div class="bestie-say">Make this post more [fun, heartfelt, bold, or calm] and keep my voice: [paste your post]</div>
+          </div>
+          <p class="bestie-text">After every post, she adds a Bestie Note on why it works and asks if you want to go deeper. Say yes, and she'll give you a few ways to make it even better.</p>
         </div>
       </div>
 
@@ -862,6 +920,29 @@ Run through this every time:
 ✦ Am I posting it in the right category, on the right day for that group?
 
 ## 9. How to help me (for the AI)
+
+**When I say hi for the first time, or I'm not sure where to start**
+1. Greet me like a friend, in a line or two.
+2. Tell me in a few short lines what you already know about me, my business, and my buyer from this Project, and what's missing. If my About Me or Client Mirror Snapshot isn't here yet, suggest I add them.
+3. Show me the menu below.
+4. Ask me what I want to work on first.
+
+**When I type "menu," show me this list:**
+✍️ Promote my offer
+🏡 Invite people to my community
+🛍️ Promote a product
+📅 Promote an event or workshop
+🔍 Check my post before I share it
+🎯 Give me title ideas
+💡 Share what I know (no link)
+📚 A lesson post for another group
+👋 My introduction post
+🗓️ Plan my promos for the week
+💬 Help me write a real comment
+🎨 Change the feel of a post
+
+Tell me I can pick one, or just tell you what's going on in my own words. If I pick one, ask only the questions you need, one or two at a time.
+
 
 When I ask for a post:
 1. If you don't know what I'm promoting, ask me what it is, who it's for, and where the link goes. Keep it to the questions you really need.
@@ -1300,7 +1381,7 @@ Aurailia ✦
       page: 'bestie',
       noTone: true,
       questions: [],
-      intro: 'This is the next step after the prompts. Your Marketing Bestie brings everything from She Sells™ together in a Project in Claude or ChatGPT. Set it up once, and every time you write, it already knows the rules, your buyer, and you. It takes about 5 minutes.',
+      intro: 'This is the next step after the prompts. Your Marketing Bestie brings everything from She Sells™ together in a Project in Claude or ChatGPT. Set it up once, and every time you write, it already knows the rules, your buyer, and you. It takes about 5 minutes, and then you just start talking to her.',
       build: function () { return ''; }
     }
   ];
@@ -2114,6 +2195,23 @@ Aurailia ✦
   });
   document.getElementById('pbCopy').addEventListener('click', function () {
     copyText(playbookText(), document.getElementById('pbStatus'), 'Copied! Paste it into your Project as a file or text 💖');
+  });
+  var KICK_PROMPT = "Hi Bestie! 👋 I just set you up. Look at everything in this Project and tell me, in a few short lines, what you already know about me, my business, and my buyer, and what's missing. Then show me the menu of things you can help me with, and ask me what I want to work on first.";
+  var MENU_PROMPTS = ["Write a promo for my [offer]. It's for [who it's for]. The link goes to [where the link goes].", "Write a promo inviting people to join my community, [community name]. This week inside we're [what's happening]. Here's the link: [link].", "Write a promo for my [product]. It's perfect for [who and when they'd use it]. The price is [price] and the link is [link].", "Write a post for my [free workshop, live, or challenge] on [date and time]. They'll walk away with [what they'll get]. Sign up here: [link].", "Check this post before I share it. Tell me what's working and what might make someone pause, then give it back cleaned up: [paste your post]", "Give me 5 titles for my post about [what you're promoting], each one using a different title starter.", "Give me 5 tip ideas I could share this week with no link, based on what my buyer is going through. Then write the one I pick.", "Turn this into a lesson post I can share in a group that doesn't allow promos: [your tip or idea]", "Write my introduction post for [community name]. Make it interesting enough that people want to click and get to know me.", "Help me plan my promos for this week. I'm promoting [your offers] and I post in [your groups and days]. Give me a different angle for each day.", "Help me write a supportive comment on this post that shows what I know, with no pitch and no link: [paste the post]", "Make this post more [fun, heartfelt, bold, or calm] and keep my voice: [paste your post]"];
+  document.getElementById('kickCopy').addEventListener('click', function () {
+    copyText(KICK_PROMPT, document.getElementById('kickStatus'), 'Copied! Paste it into a new chat in your Project 💖');
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('.menu-copy'), function (btn) {
+    btn.addEventListener('click', function () {
+      var st = btn.parentNode.parentNode.querySelector('.menu-status');
+      if (!st) {
+        st = document.createElement('p');
+        st.className = 'status menu-status';
+        st.setAttribute('aria-live', 'polite');
+        btn.parentNode.parentNode.appendChild(st);
+      }
+      copyText(MENU_PROMPTS[+btn.getAttribute('data-i')], st, 'Copied! Paste it in and fill in the [brackets] 💖');
+    });
   });
   document.getElementById('aboutCopy').addEventListener('click', function () {
     copyText(ABOUT_PROMPT, document.getElementById('aboutStatus'), 'Copied! Paste it into the chat or Project that knows you 💖');
